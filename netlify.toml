@@ -1,0 +1,8 @@
+[build]
+  functions = "functions"
+  publish = "public"
+
+[[redirects]]
+  from = "/oauth/callback"
+  to = "/.netlify/functions/verify-token"
+  status = 200
