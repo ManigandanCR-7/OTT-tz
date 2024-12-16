@@ -3,81 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Login with HubSpot</title>
+    <title>Google Login + HubSpot Integration</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <h1>Google Login + HubSpot Integration</h1>
-
-    <!-- Google Sign-In Button -->
-    <div id="g_id_onload"
-         data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
-         data-login_uri="https://otttz.netlify.app/.netlify/functions/verify-token"
-         data-auto_prompt="false">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
-
     <script>
-        // This function triggers when the user logs in with Google
-        function handleCredentialResponse(response) {
-            console.log('Google ID Token:', response.credential);
+        // Function to handle the Google login callback and send user data to Netlify function
+        function handleGoogleLoginResponse(response) {
+            // Get user information from Google
+            const { email, given_name: firstname, family_name: lastname } = response;
 
-            // Verify the token with your backend
-            fetch('/.netlify/functions/verify-token', {
+            // Call Netlify function to sync data with HubSpot
+            fetch('/.netlify/functions/sync-hubspot', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ token: response.credential }),
+                body: JSON.stringify({
+                    email,
+                    firstname,
+                    lastname,
+                }),
             })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    const { email, given_name, family_name } = data.user;
-
-                    // Sync the user's information with HubSpot
-                    syncWithHubSpot(email, given_name, family_name);
-                } else {
-                    alert('Google verification failed: ' + data.error);
-                }
-            })
-            .catch(err => {
-                console.error('Error verifying Google token:', err);
-                alert('An unexpected error occurred during Google login.');
-            });
-        }
-
-        // Sync the user's details with HubSpot
-        async function syncWithHubSpot(email, firstname, lastname) {
-            try {
-                const response = await fetch('/.netlify/functions/sync-hubspot', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email, firstname, lastname }),
-                });
-
-                const result = await response.json();
+            .then(response => response.json())
+            .then(result => {
                 if (result.success) {
-                    alert('Contact synced with HubSpot successfully!');
+                    alert('Successfully synced with HubSpot!');
+                    console.log(result);
                 } else {
-                    alert('Failed to sync with HubSpot: ' + result.error);
+                    alert('Error syncing with HubSpot!');
+                    console.error(result.error);
                 }
-            } catch (error) {
-                console.error('Error syncing with HubSpot:', error);
-                alert('An unexpected error occurred while syncing with HubSpot.');
-            }
+            })
+            .catch(error => {
+                alert('Failed to sync with HubSpot');
+                console.error(error);
+            });
         }
 
-        // Attach the Google Sign-In callback
-        window.onload = function () {
+        // Initialize the Google login client after the page has loaded
+        window.onload = () => {
             google.accounts.id.initialize({
-                client_id: '382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com',
-                callback: handleCredentialResponse,
+                client_id: 'YOUR_GOOGLE_CLIENT_ID',
+                callback: handleGoogleLoginResponse,
             });
+
             google.accounts.id.renderButton(
-                document.querySelector('.g_id_signin'),
+                document.getElementById('google-signin-button'),
                 { theme: 'outline', size: 'large' }
             );
         };
     </script>
+</head>
+<body>
+    <h1>Google Login + HubSpot Integration</h1>
+    
+    <!-- Google login button -->
+    <div id="google-signin-button"></div>
 </body>
 </html>
