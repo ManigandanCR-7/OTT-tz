@@ -48,7 +48,7 @@
     });
     console.log("Request Body:", requestBody);
 
-    const res = await fetch("/.netlify/functions/updateUserInfo", {
+    const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
