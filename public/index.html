@@ -40,42 +40,39 @@
     
             // Send user info to the backend Netlify function
             try {
-                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-    name: userData.name,
-    email: userData.email,
-    picture: userData.picture,
+    const requestBody = JSON.stringify({
+        name: userData.name,
+        email: userData.email,
+        picture: userData.picture,
+        credits: userData.credits
+    });
+    console.log("Request Body:", requestBody);
 
-})// Send user data to the function
-                });
-    
-                // Check if response is ok and handle accordingly
-                if (!res.ok) {
-                    const result = await res.json();
-                    alert("Error: Function not reached. Status code: " + res.status + " - " + result.message);
-                } else {
-                    const result = await res.json();
-                    console.log(result.message);
-                    alert("Function reached successfully!");
-                }
-            } catch (error) {
-                console.error("Error sending data to backend:", error);
-    
-                // Display specific error messages for different issues
-                if (error.message.includes("Failed to fetch")) {
-                    alert("Error: Path not reached. The server may be misconfigured or unavailable.");
-                } else if (error.message.includes("NetworkError")) {
-                    alert("Error: No network connection or backend function unavailable.");
-                } else {
-                    alert("Error: Unable to reach the function. This may be caused by a misconfiguration or an issue with the server.");
-                }
-            }
-    
-            // Display user info on the page
+    const res = await fetch("/.netlify/functions/updateUserInfo", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: requestBody
+    });
+
+    console.log("Response Status:", res.status);
+    const result = await res.json();
+
+    if (!res.ok) {
+        console.error("Error:", result.message);
+        throw new Error(result.message);
+    }
+
+    console.log("Success:", result);
+    alert("Data updated successfully!");
+
+} catch (error) {
+    console.error("Error during fetch:", error);
+    alert(`Error: ${error.message}`);
+}
+
+              
             document.getElementById("user-name").innerText = userData.name;
             document.getElementById("user-email").innerText = userData.email;
             const imgElement = document.getElementById("user-picture");
