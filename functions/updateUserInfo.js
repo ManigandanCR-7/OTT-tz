@@ -13,7 +13,7 @@ const supabase = createClient(
 exports.handler = async (event, context) => {
   try {
     // Ensure it's a POST request
-    if (event.httpMethod !== "PUT") {
+    if (event.httpMethod !== "POST") {
       return {
         statusCode: 405,
         body: JSON.stringify({ message: "Method not allowed" }),
