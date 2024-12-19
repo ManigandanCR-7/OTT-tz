@@ -41,7 +41,7 @@
             // Send user info to the backend Netlify function
             try {
                 const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-                    method: "POST",
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
