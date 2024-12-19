@@ -45,7 +45,12 @@
                     headers: {
                         "Content-Type": "application/json",
                     },
-                    body: JSON.stringify(userData), // Send user data to the function
+                    body: JSON.stringify({
+    name: userData.name,
+    email: userData.email,
+    picture: userData.picture,
+
+})// Send user data to the function
                 });
     
                 // Check if response is ok and handle accordingly
