@@ -9,6 +9,22 @@ const supabase = createClient(
 );
 
 exports.handler = async (event, context) => {
+  if (event.httpMethod !== "POST") {
+    return {
+      statusCode: 405,
+      body: JSON.stringify({ message: "Method not allowed" }),
+    };
+  }
+
+  // Your function logic here
+  return {
+    statusCode: 200,
+    body: JSON.stringify({ message: "User info updated successfully" }),
+  };
+};
+
+
+exports.handler = async (event, context) => {
     if (event.httpMethod === "POST") {
         try {
             // Parse incoming data
