@@ -16,7 +16,7 @@ exports.handler = async (event, context) => {
 
             // Store user information in Supabase
             const { data, error } = await supabase
-                .from('OTT'tz')
+               .from('"OTT\'Tz"')
                 .upsert({ name, email, picture, credits: 100 }) // Set initial credits to 100
                 .eq('email', email);
 
