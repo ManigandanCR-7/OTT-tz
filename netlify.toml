@@ -1,0 +1,8 @@
+[build]
+  functions = "functions" # Point to your functions folder
+  publish = "public"      # Point to your public folder
+
+[dev]
+  functions = "functions"
+  publish = "public"
+  port = 8888
