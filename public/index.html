@@ -40,7 +40,7 @@
     
             // Send user info to the backend Netlify function
             try {
-                const res = await fetch("/.netlify/functions/updateUserInfo", {
+                const res = await fetch("./functions/updateUserInfo", {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
