@@ -1,0 +1,12 @@
+{
+    "name": "ottz",
+    "version": "1.0.0",
+    "description": "A sample project for OTT functionalities",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "dependencies": {
+        "@supabase/supabase-js": "^2.47.9"
+    }
+}
