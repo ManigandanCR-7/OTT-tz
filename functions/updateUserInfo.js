@@ -8,56 +8,42 @@ const supabase = createClient(
     process.env.SUPABASE_KEY // Your Supabase public API key
 );
 
+
+
 exports.handler = async (event, context) => {
-  if (event.httpMethod !== "POST") {
+  try {
+    // Ensure it's a POST request
+    if (event.httpMethod !== "POST") {
+      return {
+        statusCode: 405,
+        body: JSON.stringify({ message: "Method not allowed" }),
+      };
+    }
+
+    // Parse the incoming JSON body
+    const data = JSON.parse(event.body);
+
+    // Validate required fields
+    if (!data.username || !data.email) {
+      return {
+        statusCode: 400,
+        body: JSON.stringify({ message: "Missing required fields" }),
+      };
+    }
+
+    // Simulate database insertion or processing
+    // Replace this with your actual database logic
+    console.log("Data received:", data);
+
     return {
-      statusCode: 405,
-      body: JSON.stringify({ message: "Method not allowed" }),
+      statusCode: 200,
+      body: JSON.stringify({ message: "User info updated successfully" }),
+    };
+  } catch (error) {
+    console.error("Error:", error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: "Internal server error" }),
     };
   }
-
-  // Your function logic here
-  return {
-    statusCode: 200,
-    body: JSON.stringify({ message: "User info updated successfully" }),
-  };
-};
-
-
-exports.handler = async (event, context) => {
-    if (event.httpMethod === "POST") {
-        try {
-            // Parse incoming data
-            const { name, email, picture } = JSON.parse(event.body);
-
-            // Store user information in Supabase
-            const { data, error } = await supabase
-               .from('OTT')
-                .upsert({ name, email, picture, credits: 100 }) // Set initial credits to 100
-                .eq('email', email);
-
-            if (error) {
-                return {
-                    statusCode: 400,
-                    body: JSON.stringify({ message: 'Error inserting data', error: error.message }),
-                };
-            }
-
-            return {
-                statusCode: 200,
-                body: JSON.stringify({ message: 'User data stored successfully!', data }),
-            };
-
-        } catch (err) {
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ message: 'Server error', error: err.message }),
-            };
-        }
-    } else {
-        return {
-            statusCode: 405,
-            body: JSON.stringify({ message: 'Method not allowed' }),
-        };
-    }
 };
