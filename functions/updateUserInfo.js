@@ -1,62 +1,62 @@
+// Assuming you're using the Supabase client
+
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+const supabase = createClient('https://your-supabase-url', 'your-anon-key');
 
 exports.handler = async (event) => {
-    try {
-        // Ensure this is a POST request
-        if (event.httpMethod !== 'POST') {
-            return {
-                statusCode: 405,
-                body: JSON.stringify({ message: 'Method not allowed' }),
-            };
-        }
+    const { name, email, picture, credits } = JSON.parse(event.body);
 
-        // Parse the request body
-        const { name, email, picture, credits } = JSON.parse(event.body || '{}');
+    // Check if the user already exists
+    const { data: existingUser, error: fetchError } = await supabase
+        .from('users')
+        .select('*')
+        .eq('email', email)
+        .single();  // Fetch only one user by email
 
-        // Validate required fields
-        if (!name || !email || !picture || typeof credits !== 'number') {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({
-                    message: 'Missing required fields: name, email, picture, and credits are mandatory',
-                }),
-            };
-        }
-
-        // Insert or update user information
-        const { data, error } = await supabase
-            .from('OTT') // Update this with your actual table name
-            .upsert({
-                name,
-                email,
-                picture,
-                credits,
-            });
-
-        // Check for Supabase errors
-        if (error) {
-            console.error('Supabase Error:', error);
-            return {
-                statusCode: 500,
-                body: JSON.stringify({ message: 'Database error', details: error.message }),
-            };
-        }
-
-        // Success response
-        return {
-            statusCode: 200,
-            body: JSON.stringify({ message: 'User information updated successfully', data }),
-        };
-    } catch (error) {
-        console.error('Error:', error);
+    if (fetchError) {
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: 'Internal server error', details: error.message }),
+            body: JSON.stringify({ message: "Error fetching user", error: fetchError.message }),
         };
     }
+
+    // If the user exists, return their data
+    if (existingUser) {
+        return {
+            statusCode: 200,
+            body: JSON.stringify({
+                userExists: true,
+                name: existingUser.name,
+                email: existingUser.email,
+                picture: existingUser.picture,
+                credits: existingUser.credits
+            }),
+        };
+    }
+
+    // If the user doesn't exist, create a new user
+    const { data: newUser, error: insertError } = await supabase
+        .from('users')
+        .upsert({ name, email, picture, credits });
+
+    if (insertError) {
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error inserting new user", error: insertError.message }),
+        };
+    }
+
+    // Return the new user data
+    return {
+        statusCode: 200,
+        body: JSON.stringify({
+            userExists: false,
+            name: newUser[0].name,
+            email: newUser[0].email,
+            picture: newUser[0].picture,
+            credits: newUser[0].credits
+        }),
+    };
 };
