@@ -26,59 +26,59 @@
 
     <script>
         async function handleCredentialResponse(response) {
-            try {
-                const idToken = response.credential;
-                const payload = JSON.parse(atob(idToken.split(".")[1]));
+    try {
+        const idToken = response.credential;
+        const payload = JSON.parse(atob(idToken.split(".")[1]));
 
-                const userData = {
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    credits: 100  // Set initial credits
-                };
+        const userData = {
+            name: payload.name,
+            email: payload.email,
+            picture: payload.picture,
+            credits: 100  // Set initial credits if it's a new user
+        };
 
-                console.log("Decoded Payload:", payload);
-                console.log("Constructed User Data:", userData);
+        console.log("Decoded Payload:", payload);
+        console.log("Constructed User Data:", userData);
 
-                // Send user info to the backend Netlify function
-                const requestBody = JSON.stringify(userData);
+        // Send user info to the backend Netlify function
+        const requestBody = JSON.stringify(userData);
 
-                console.log("Request Body:", requestBody);
+        const res = await fetch("https://your-netlify-function-url", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: requestBody
+        });
 
-                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: requestBody
-                });
+        const result = await res.json();
 
-                console.log("Response Status:", res.status);
-
-                // Parse the backend response
-                const result = await res.json();
-
-                if (!res.ok) {
-                    console.error("Error Response:", result);
-                    throw new Error(
-                        `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
-                    );
-                }
-
-                console.log("Backend Success Response:", result);
-                alert("Data updated successfully!");
-
-                // Update the UI with user information
-                document.getElementById("user-name").innerText = userData.name;
-                document.getElementById("user-email").innerText = userData.email;
-                const imgElement = document.getElementById("user-picture");
-                imgElement.src = userData.picture;
-                imgElement.style.display = "block";
-            } catch (error) {
-                console.error("Error during credential handling:", error);
-                alert(`Error: ${error.message}`);
-            }
+        if (!res.ok) {
+            throw new Error(`Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`);
         }
+
+        // Check if the user already exists
+        if (result.userExists) {
+            console.log("User data fetched successfully:", result);
+            alert("User already exists. Data fetched successfully!");
+        } else {
+            console.log("New user created:", result);
+            alert("New user created and data updated successfully!");
+        }
+
+        // Update the UI with user information
+        document.getElementById("user-name").innerText = result.name;
+        document.getElementById("user-email").innerText = result.email;
+        const imgElement = document.getElementById("user-picture");
+        imgElement.src = result.picture;
+        imgElement.style.display = "block";
+
+    } catch (error) {
+        console.error("Error during credential handling:", error);
+        alert(`Error: ${error.message}`);
+    }
+}
+
     </script>
 </body>
 </html>
