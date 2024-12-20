@@ -28,20 +28,13 @@
         async function handleCredentialResponse(response) {
             try {
                 const idToken = response.credential;
-                
-                // Ensure we have an idToken
-                if (!idToken) {
-                    throw new Error("No idToken found in the response.");
-                }
-
-                // Decode the idToken payload to get user info
                 const payload = JSON.parse(atob(idToken.split(".")[1]));
 
                 const userData = {
                     name: payload.name,
                     email: payload.email,
                     picture: payload.picture,
-                    credits: 100  // Set initial credits if it's a new user
+                    credits: 100  // Set initial credits
                 };
 
                 console.log("Decoded Payload:", payload);
@@ -49,6 +42,8 @@
 
                 // Send user info to the backend Netlify function
                 const requestBody = JSON.stringify(userData);
+
+                console.log("Request Body:", requestBody);
 
                 const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
                     method: "POST",
@@ -58,29 +53,27 @@
                     body: requestBody
                 });
 
+                console.log("Response Status:", res.status);
+
+                // Parse the backend response
                 const result = await res.json();
 
-                // Check for network errors
                 if (!res.ok) {
-                    throw new Error(`Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`);
+                    console.error("Error Response:", result);
+                    throw new Error(
+                        `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
+                    );
                 }
 
-                // Check if the user already exists
-                if (result.userExists) {
-                    console.log("User data fetched successfully:", result);
-                    alert("User already exists. Data fetched successfully!");
-                } else {
-                    console.log("New user created:", result);
-                    alert("New user created and data updated successfully!");
-                }
+                console.log("Backend Success Response:", result);
+                alert("Data updated successfully!");
 
                 // Update the UI with user information
-                document.getElementById("user-name").innerText = result.name;
-                document.getElementById("user-email").innerText = result.email;
+                document.getElementById("user-name").innerText = userData.name;
+                document.getElementById("user-email").innerText = userData.email;
                 const imgElement = document.getElementById("user-picture");
-                imgElement.src = result.picture;
+                imgElement.src = userData.picture;
                 imgElement.style.display = "block";
-
             } catch (error) {
                 console.error("Error during credential handling:", error);
                 alert(`Error: ${error.message}`);
