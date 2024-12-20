@@ -1,73 +1,62 @@
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
-const supabase = createClient('https://your-supabase-url', 'your-anon-key');
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 exports.handler = async (event) => {
     try {
-        const { name, email, picture, credits } = JSON.parse(event.body);
-
-        // Check if the user already exists by email
-        const { data: existingUser, error: fetchError } = await supabase
-            .from('users')
-            .select('*')
-            .eq('email', email)
-            .single();  // Fetch only one user by email
-
-        // Handle errors in fetching user
-        if (fetchError && fetchError.code !== 'PGRST100') { // Exclude specific "no rows found" error
-            console.error("Error fetching user:", fetchError);
+        // Ensure this is a POST request
+        if (event.httpMethod !== 'POST') {
             return {
-                statusCode: 500,
-                body: JSON.stringify({ message: "Error fetching user", error: fetchError.message }),
+                statusCode: 405,
+                body: JSON.stringify({ message: 'Method not allowed' }),
             };
         }
 
-        // If user exists, return their details
-        if (existingUser) {
+        // Parse the request body
+        const { name, email, picture, credits } = JSON.parse(event.body || '{}');
+
+        // Validate required fields
+        if (!name || !email || !picture || typeof credits !== 'number') {
             return {
-                statusCode: 200,
+                statusCode: 400,
                 body: JSON.stringify({
-                    userExists: true,
-                    name: existingUser.name,
-                    email: existingUser.email,
-                    picture: existingUser.picture,
-                    credits: existingUser.credits
+                    message: 'Missing required fields: name, email, picture, and credits are mandatory',
                 }),
             };
         }
 
-        // If user doesn't exist, create a new user
-        const { data: newUser, error: insertError } = await supabase
-            .from('users')
-            .upsert({ name, email, picture, credits }, { onConflict: ['email'] });
+        // Insert or update user information
+        const { data, error } = await supabase
+            .from('OTT"Tz') // Update this with your actual table name
+            .upsert({
+                name,
+                email,
+                picture,
+                credits,
+            });
 
-        // Handle errors in inserting new user
-        if (insertError) {
-            console.error("Error inserting new user:", insertError);
+        // Check for Supabase errors
+        if (error) {
+            console.error('Supabase Error:', error);
             return {
                 statusCode: 500,
-                body: JSON.stringify({ message: "Error inserting new user", error: insertError.message }),
+                body: JSON.stringify({ message: 'Database error', details: error.message }),
             };
         }
 
-        // Return the new user data
+        // Success response
         return {
             statusCode: 200,
-            body: JSON.stringify({
-                userExists: false,
-                name: newUser[0].name,
-                email: newUser[0].email,
-                picture: newUser[0].picture,
-                credits: newUser[0].credits
-            }),
+            body: JSON.stringify({ message: 'User information updated successfully', data }),
         };
     } catch (error) {
-        // Catch any unexpected errors
-        console.error("Unexpected error:", error);
+        console.error('Error:', error);
         return {
             statusCode: 500,
-            body: JSON.stringify({ message: "Unexpected error", error: error.message }),
+            body: JSON.stringify({ message: 'Internal server error', details: error.message }),
         };
     }
 };
