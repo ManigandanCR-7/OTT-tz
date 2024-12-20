@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -26,58 +26,58 @@
 
     <script>
         async function handleCredentialResponse(response) {
-            const idToken = response.credential;
-            const payload = JSON.parse(atob(idToken.split(".")[1]));
-    
-            const userData = {
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture,
-                credits: 100  // Set initial credits
-            };
-    
-            console.log("User Info:", userData);
-    
-            // Send user info to the backend Netlify function
             try {
-    const requestBody = JSON.stringify({
-        name: userData.name,
-        email: userData.email,
-        picture: userData.picture,
-        credits: userData.credits
-    });
-    console.log("Request Body:", requestBody);
+                const idToken = response.credential;
+                const payload = JSON.parse(atob(idToken.split(".")[1]));
 
-    const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: requestBody
-    });
+                const userData = {
+                    name: payload.name,
+                    email: payload.email,
+                    picture: payload.picture,
+                    credits: 100  // Set initial credits
+                };
 
-    console.log("Response Status:", res.status);
-    const result = await res.json();
+                console.log("Decoded Payload:", payload);
+                console.log("Constructed User Data:", userData);
 
-    if (!res.ok) {
-        console.error("Error:", result.message);
-        throw new Error(result.message);
-    }
+                // Send user info to the backend Netlify function
+                const requestBody = JSON.stringify(userData);
 
-    console.log("Success:", result);
-    alert("Data updated successfully!");
+                console.log("Request Body:", requestBody);
 
-} catch (error) {
-    console.error("Error during fetch:", error);
-    alert(`Error: ${error.message}`);
-}
+                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: requestBody
+                });
 
-              
-            document.getElementById("user-name").innerText = userData.name;
-            document.getElementById("user-email").innerText = userData.email;
-            const imgElement = document.getElementById("user-picture");
-            imgElement.src = userData.picture;
-            imgElement.style.display = "block";
+                console.log("Response Status:", res.status);
+
+                // Parse the backend response
+                const result = await res.json();
+
+                if (!res.ok) {
+                    console.error("Error Response:", result);
+                    throw new Error(
+                        `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
+                    );
+                }
+
+                console.log("Backend Success Response:", result);
+                alert("Data updated successfully!");
+
+                // Update the UI with user information
+                document.getElementById("user-name").innerText = userData.name;
+                document.getElementById("user-email").innerText = userData.email;
+                const imgElement = document.getElementById("user-picture");
+                imgElement.src = userData.picture;
+                imgElement.style.display = "block";
+            } catch (error) {
+                console.error("Error during credential handling:", error);
+                alert(`Error: ${error.message}`);
+            }
         }
     </script>
 </body>
