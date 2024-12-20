@@ -5,75 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Sign-In Demo</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Style for the top-right button */
-        #signin-button {
-            position: fixed;
-            top: 10px;
-            right: 20px;
-            background-color: #4285F4;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s ease, background-color 0.3s ease;
-        }
-
-        #signin-button:hover {
-            background-color: #357AE8;
-            transform: scale(1.05);
-        }
-
-        /* Style for user information container */
-        #user-info {
-            margin-top: 60px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        #user-info.visible {
-            opacity: 1;
-        }
-
-        #user-picture {
-            display: none;
-            width: 100px;
-            border-radius: 50%;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
-    <!-- Sign-In Button -->
-    <button id="signin-button" onclick="startSignIn()">Sign In</button>
+    <!-- Google Sign-In Button -->
+    <div id="g_id_onload"
+         data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
+         data-context="signin"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
 
     <!-- Display User Information -->
-    <div id="user-info">
+    <div id="user-info" style="margin-top: 20px;">
         <h2>User Information</h2>
         <p><strong>Name:</strong> <span id="user-name"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <img id="user-picture" alt="User Picture">
+        <img id="user-picture" alt="User Picture" style="display:none; width:100px; border-radius:50%;">
     </div>
 
     <script>
-        function startSignIn() {
-            // Manually trigger the Google One Tap prompt
-            google.accounts.id.prompt((notification) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    alert("Google Sign-In prompt was not displayed. Please check your configuration.");
-                }
-            });
-        }
-
         async function handleCredentialResponse(response) {
             try {
                 const idToken = response.credential;
@@ -123,22 +74,11 @@
                 const imgElement = document.getElementById("user-picture");
                 imgElement.src = userData.picture;
                 imgElement.style.display = "block";
-
-                // Show user information with fade-in effect
-                document.getElementById("user-info").classList.add("visible");
             } catch (error) {
                 console.error("Error during credential handling:", error);
                 alert(`Error: ${error.message}`);
             }
         }
-
-        // Initialize Google Sign-In
-        window.onload = () => {
-            google.accounts.id.initialize({
-                client_id: "382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com",
-                callback: handleCredentialResponse,
-            });
-        };
     </script>
 </body>
 </html>
