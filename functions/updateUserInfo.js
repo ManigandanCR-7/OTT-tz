@@ -30,7 +30,7 @@ exports.handler = async (event) => {
 
         // Insert or update user information
         const { data, error } = await supabase
-            .from('OTT"Tz') // Update this with your actual table name
+            .from('OTT') // Update this with your actual table name
             .upsert({
                 name,
                 email,
