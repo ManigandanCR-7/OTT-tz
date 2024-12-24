@@ -28,13 +28,13 @@
     }
 
     /* Hover effect on button */
-    #popup-btn:hover {
+    #g_id_onload:hover {
       background: #00000092;
       transform: scale(1.1);
     }
 
     /* Pop-up Info Bar (Initially hidden) */
-    #popup-bar {
+    #user-info {
       position: fixed;
       top: 20px; /* Align it just below the button */
       right: 20px;
@@ -50,37 +50,37 @@
     }
 
     /* Content inside pop-up */
-    #popup-bar .user-info {
+    #user-info .user-info {
       text-align: center;
       opacity: 0;
       transition: opacity 0.3s ease;
     }
 
-    #popup-bar img {
+    #user-info img {
       width: 80px;
       height: 80px;
       border-radius: 50%;
       margin-bottom: 15px;
     }
 
-    #popup-bar h2 {
+    #user-info h2 {
       font-size: 22px;
       margin-bottom: 10px;
     }
 
-    #popup-bar p {
+    #user-info p {
       font-size: 16px;
       margin-bottom: 20px;
     }
 
-    #popup-bar .credits {
+    #user-info .credits {
       font-size: 18px;
       font-weight: bold;
       color: #ffffff;
     }
 
     /* Close button inside pop-up */
-    #popup-bar .close-btn {
+    #user-info .close-btn {
       position: absolute;
       top: 15px;
       left: 15px;
@@ -92,7 +92,7 @@
       transition: color 0.3s ease;
     }
 
-    #popup-bar .close-btn:hover {
+    #user-info .close-btn:hover {
       color: #ff4d4d;
     }
 
@@ -180,8 +180,8 @@
     </script>
     <script>
     // Select elements
-    const popupBtn = document.getElementById('popup-btn');
-    const popupBar = document.getElementById('popup-bar');
+    const popupBtn = document.getElementById('g_id_onload');
+    const popupBar = document.getElementById('user-info');
     const closeBtn = document.querySelector('.close-btn');
     const userInfo = document.querySelector('.user-info');
 
