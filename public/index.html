@@ -95,6 +95,27 @@
     #user-info .close-btn:hover {
       color: #ff4d4d;
     }
+        .g_id_signin {
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .g_id_signin.hidden {
+            opacity: 0;
+            transform: scale(0.9);
+            pointer-events: none;
+        }
+
+        .message {
+            display: none;
+            font-size: 1.5rem;
+            color: #4caf50;
+        }
+
+        .message.visible {
+            display: block;
+        }
 
   </style>
 <head>
@@ -110,8 +131,10 @@
          data-context="signin"
          data-callback="handleCredentialResponse"
          data-auto_prompt="false">
-        <div class="g_id_signin" data-type="standard"></div>
     </div>
+
+    <div class="g_id_signin" data-type="standard" id="google-signin"></div>
+    <div class="message" id="welcome-message">Welcome! Signing you in...</div>
 
 
     <!-- Display User Information -->
@@ -119,9 +142,38 @@
         <h2>profile :</h2>
         <p><strong>Name:</strong> <span id="user-name"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <img id="user-picture" alt="User Picture" style="display:none; width:100px; border-radius:50%;">
+        <img id="user-picture" alt="User Picture" style="display:none; width:70px; border-radius:50%;">
     </div>
 
+    <script>
+        function handleCredentialResponse(response) {
+            console.log("Credential Response:", response);
+            
+            // Perform any processing needed here
+
+            // Add a fade-out effect
+            const signInButton = document.getElementById("google-signin");
+            signInButton.classList.add("hidden");
+
+            // Display the welcome message
+            const welcomeMessage = document.getElementById("welcome-message");
+            setTimeout(() => {
+                welcomeMessage.classList.add("visible");
+            }, 500); // Wait for the fade-out to finish
+        }
+
+        window.onload = () => {
+            google.accounts.id.initialize({
+                client_id: "YOUR_GOOGLE_CLIENT_ID",
+                callback: handleCredentialResponse
+            });
+            google.accounts.id.renderButton(
+                document.getElementById("google-signin"),
+                { theme: "outline", size: "large" } // Custom button style
+            );
+        };
+    </script>
+    
     <script>
     // Function to save data in cookies
     function setCookie(name, value, days) {
