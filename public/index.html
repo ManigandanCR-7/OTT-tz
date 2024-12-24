@@ -1,5 +1,102 @@
 <!DOCTYPE html>
 <html lang="en">
+    <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f4f4f9;
+    }
+
+    /* Button to trigger the pop-up */
+    #popup-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: #02030b8f;
+      color: white;
+      font-size: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+      transition: background 0.3s ease, transform 0.3s ease;
+    }
+
+    /* Hover effect on button */
+    #popup-btn:hover {
+      background: #00000092;
+      transform: scale(1.1);
+    }
+
+    /* Pop-up Info Bar (Initially hidden) */
+    #popup-bar {
+      position: fixed;
+      top: 20px; /* Align it just below the button */
+      right: 20px;
+      width: 300px;
+      height: 0;
+      background: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 0 20px;
+      border-radius: 20px;
+      overflow: hidden; /* Hide content until expanded */
+      transition: height 0.5s ease, padding 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Content inside pop-up */
+    #popup-bar .user-info {
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    #popup-bar img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 15px;
+    }
+
+    #popup-bar h2 {
+      font-size: 22px;
+      margin-bottom: 10px;
+    }
+
+    #popup-bar p {
+      font-size: 16px;
+      margin-bottom: 20px;
+    }
+
+    #popup-bar .credits {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    /* Close button inside pop-up */
+    #popup-bar .close-btn {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: none;
+      border: none;
+      font-size: 24px;
+      color: #fff;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+
+    #popup-bar .close-btn:hover {
+      color: #ff4d4d;
+    }
+
+  </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +105,7 @@
 </head>
 <body>
     <!-- Google Sign-In Button -->
-    <div id="g_id_onload"
+    <div id="popup-btn"
          data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
          data-context="signin"
          data-callback="handleCredentialResponse"
@@ -17,7 +114,7 @@
     <div class="g_id_signin" data-type="standard"></div>
 
     <!-- Display User Information -->
-    <div id="user-info" style="margin-top: 20px;">
+    <div id="popup-bar" style="margin-top: 20px;">
         <h2>User Information</h2>
         <p><strong>Name:</strong> <span id="user-name"></span></p>
         <p><strong>Email:</strong> <span id="user-email"></span></p>
