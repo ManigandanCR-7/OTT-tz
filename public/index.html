@@ -1,262 +1,167 @@
 <!DOCTYPE html>
 <html lang="en">
     <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background: #f4f4f9;
-    }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #000; /* Royal black theme */
+            color: #fff;
+        }
+        .video-container {
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
 
-    /* Button to trigger the pop-up */
-    #g_id_onload{
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-      background: #02030b8f;
-      color: white;
-      font-size: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-      transition: background 0.3s ease, transform 0.3s ease;
-    }
+        #background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            min-height: 100%;
+            min-width: 100%;
+            object-fit: cover;
+        }
 
-    /* Hover effect on button */
-    #g_id_onload:hover {
-      background: #00000092;
-      transform: scale(1.1);
-    }
+        #google-signin {
+            width: 400px; /* Increased width */
+            height: 80px;
+            border-radius: 10%;
+            margin: 0 auto;
+            position: absolute;
+            bottom: 220px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            
+            transition: transform 0.3s ease;
+            z-index: 2; /* Ensure it stays on top */
+        }
 
-    /* Pop-up Info Bar (Initially hidden) */
-    #user-info {
-      position: fixed;
-      top: 20px; /* Align it just below the button */
-      right: 20px;
-      width: 300px;
-      height: 0;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      padding: 0 20px;
-      border-radius: 20px;
-      overflow: hidden; /* Hide content until expanded */
-      transition: height 0.5s ease, padding 0.3s ease;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    }
-
-    /* Content inside pop-up */
-    #user-info .user-info {
-      text-align: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    #user-info img {
-      width: 93px;
-      height: 80px;
-      border-radius: 50%;
-      margin-bottom: 15px;
-    }
-
-    #user-info h2 {
-      font-size: 22px;
-      margin-bottom: 10px;
-    }
-
-    #user-info p {
-      font-size: 16px;
-      margin-bottom: 20px;
-    }
-
-    #user-info .credits {
-      font-size: 18px;
-      font-weight: bold;
-      color: #ffffff;
-    }
-
-    /* Close button inside pop-up */
-    #user-info .close-btn {
-      position: absolute;
-      top: 15px;
-      left: 15px;
-      background: none;
-      border: none;
-      font-size: 24px;
-      color: #fff;
-      cursor: pointer;
-      transition: color 0.3s ease;
-    }
-
-    #user-info .close-btn:hover {
-      color: #ff4d4d;
-    }
        
-  </style>
+
+        .blur-slide {
+            position: absolute;
+            bottom: 150px; /* Position below sign-in button */
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40%;
+            height: 520px;
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 30px;
+            backdrop-filter: blur(10px); /* Transparency blur effect */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            z-index: 1; /* Behind the Google sign-in */
+        }
+
+        .blur-slide p {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #fff;
+            text-align: center;
+        }
+
+        .blur-slide:hover {
+            transform: translateX(-50%) scale(1.02); /* Hover effect */
+        }
+
+        .hover-item {
+            width: 80%;
+            margin: 5px 0;
+            padding: 10px;
+            text-align: center;
+            color: #fff;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .hover-item:hover {
+            background: rgba(255, 255, 255, 0.5);
+            transform: translateY(-5px); /* Vertical hover effect */
+        }
+    </style>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OTT'tz theatre on desk </title>
+    <title>OTT'tz Theatre on Desk</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    
+
+    <div class="video-container">
+        <!-- Background Video -->
+        <video autoplay muted loop id="background-video">
+            <source src="avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+
     <!-- Google Sign-In Button -->
     <div id="g_id_onload"
          data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
          data-context="signin"
          data-callback="handleCredentialResponse"
          data-auto_prompt="false">
-        <div class="g_id_signin" data-type="standard" id="google-signin"></div>
     </div>
 
-    
-    <!-- Display User Information -->
-    <div id="user-info" style="margin-top: 20px;">
-        <h2>profile :</h2>
-        <p><strong>Name:</strong> <span id="user-name"></span></p>
-        <p><strong>Email:</strong> <span id="user-email"></span></p>
-        <img id="user-picture" alt="User Picture" style="display:none; width:70px; border-radius:50%;">
+    <div class="g_id_signin" id="google-signin"></div>
+
+    <!-- Transparency Blur Slide -->
+    <div class="blur-slide">
+        <h1> OTT'tz  Welcomes you !  </h1>
+        <h3>world's #1 OTT theatre on desk</h3>
+     
     </div>
 
-    
     <script>
-    // Function to save data in cookies
-    function setCookie(name, value, days) {
-        const date = new Date();
-        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-        const expires = `expires=${date.toUTCString()}`;
-        document.cookie = `${name}=${value}; ${expires}; path=/`;
-    }
+        // Function to handle the credential response
+        async function handleCredentialResponse(response) {
+            try {
+                const idToken = response.credential;
+                const payload = JSON.parse(atob(idToken.split(".")[1]));
 
-    // Function to retrieve data from cookies
-    function getCookie(name) {
-        const nameEQ = `${name}=`;
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            let cookie = cookies[i].trim();
-            if (cookie.indexOf(nameEQ) === 0) {
-                return cookie.substring(nameEQ.length, cookie.length);
+                const userData = {
+                    name: payload.name,
+                    email: payload.email,
+                    picture: payload.picture,
+                    credits: 100 // Set initial credits
+                };
+
+                // Save user data to cookies
+                setCookie("userName", userData.name, 7);
+                setCookie("userEmail", userData.email, 7);
+                setCookie("userPicture", userData.picture, 7);
+                setCookie("userCredits", userData.credits, 7);
+
+                // Simulated backend interaction
+                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(userData),
+                });
+
+                if (!res.ok) throw new Error("Failed to update user info");
+
+                // Redirect user to the main webpage after successful login
+                window.location.href = "https://otttz.netlify.app/home"; // Replace with the actual webpage URL
+            } catch (error) {
+                console.error("Error during credential handling:", error);
+                alert(`Error: ${error.message}`);
             }
         }
-        return null;
-    }
 
-    // Function to handle the credential response
-    async function handleCredentialResponse(response) {
-        try {
-            const idToken = response.credential;
-            const payload = JSON.parse(atob(idToken.split(".")[1]));
-
-            const userData = {
-                name: payload.name,
-                email: payload.email,
-                picture: payload.picture,
-                credits: 100 // Set initial credits
-            };
-
-            console.log("Decoded Payload:", payload);
-            console.log("Constructed User Data:", userData);
-
-            // Save user data to cookies
-            setCookie("userName", userData.name, 7); // Save for 7 days
-            setCookie("userEmail", userData.email, 7);
-            setCookie("userPicture", userData.picture, 7);
-            setCookie("userCredits", userData.credits, 7);
-
-            // Send user info to the backend Netlify function
-            const requestBody = JSON.stringify(userData);
-
-            console.log("Request Body:", requestBody);
-
-            const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: requestBody
-            });
-
-            console.log("Response Status:", res.status);
-
-            // Parse the backend response
-            const result = await res.json();
-
-            if (!res.ok) {
-                console.error("Error Response:", result);
-                throw new Error(
-                    `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
-                );
-            }
-
-            console.log("Backend Success Response:", result);
-            alert("Data updated successfully!");
-
-            // Update the UI with user information
-            document.getElementById("user-name").innerText = userData.name;
-            document.getElementById("user-email").innerText = userData.email;
-            const imgElement = document.getElementById("user-picture");
-            imgElement.src = userData.picture;
-            imgElement.style.display = "block";
-        } catch (error) {
-            console.error("Error during credential handling:", error);
-            alert(`Error: ${error.message}`);
+        // Utility function to set cookies
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
         }
-    }
-
-    // Load user data from cookies on page load
-    window.addEventListener("DOMContentLoaded", () => {
-        const savedName = getCookie("userName");
-        const savedEmail = getCookie("userEmail");
-        const savedPicture = getCookie("userPicture");
-        const savedCredits = getCookie("userCredits");
-
-        if (savedName && savedEmail && savedPicture) {
-            document.getElementById("user-name").innerText = savedName;
-            document.getElementById("user-email").innerText = savedEmail;
-            const imgElement = document.getElementById("user-picture");
-            imgElement.src = savedPicture;
-            imgElement.style.display = "block";
-            console.log(`Loaded saved user data: Name=${savedName}, Email=${savedEmail}, Credits=${savedCredits}`);
-        }
-    });
-</script>
-
-    <script>
-    // Select elements
-    const signInButton = document.getElementById("google-signin");
-    signInButton.classList.add("hidden");
-
-    const popupBtn = document.getElementById('g_id_onload');
-    const popupBar = document.getElementById('user-info');
-    const closeBtn = document.querySelector('.close-btn');
-    const userInfo = document.querySelector('.user-info');
-
-    // Toggle the visibility of the pop-up bar
-    popupBtn.addEventListener('click', () => {
-      if (popupBar.style.height === '0px' || popupBar.style.height === '') {
-        // Open the bar by increasing its height
-        popupBar.style.height = '250px'; // Adjust based on content height
-        popupBar.style.padding = '20px'; // Show padding
-        userInfo.style.opacity = '1'; // Show content with fade-in effect
-      } else {
-        // Close the bar by reducing its height
-        popupBar.style.height = '0';
-        popupBar.style.padding = '0';
-        userInfo.style.opacity = '0'; // Fade out content
-      }
-    });
-
-    // Close the pop-up bar
-    closeBtn.addEventListener('click', () => {
-      popupBar.style.height = '0';
-      popupBar.style.padding = '0';
-      userInfo.style.opacity = '0';
-    });
-  </script>
+    </script>
 </body>
 </html>
