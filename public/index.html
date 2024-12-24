@@ -177,5 +177,34 @@
             }
         }
     </script>
+    <script>
+    // Select elements
+    const popupBtn = document.getElementById('popup-btn');
+    const popupBar = document.getElementById('popup-bar');
+    const closeBtn = document.querySelector('.close-btn');
+    const userInfo = document.querySelector('.user-info');
+
+    // Toggle the visibility of the pop-up bar
+    popupBtn.addEventListener('click', () => {
+      if (popupBar.style.height === '0px' || popupBar.style.height === '') {
+        // Open the bar by increasing its height
+        popupBar.style.height = '250px'; // Adjust based on content height
+        popupBar.style.padding = '20px'; // Show padding
+        userInfo.style.opacity = '1'; // Show content with fade-in effect
+      } else {
+        // Close the bar by reducing its height
+        popupBar.style.height = '0';
+        popupBar.style.padding = '0';
+        userInfo.style.opacity = '0'; // Fade out content
+      }
+    });
+
+    // Close the pop-up bar
+    closeBtn.addEventListener('click', () => {
+      popupBar.style.height = '0';
+      popupBar.style.padding = '0';
+      userInfo.style.opacity = '0';
+    });
+  </script>
 </body>
 </html>
