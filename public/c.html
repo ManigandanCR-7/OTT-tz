@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-physics-system@3.2.0/dist/aframe-physics-system.min.js"></script>
+    <style>
+
+.overlay1{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .overlay1.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+
+        .loading-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .loading-clock {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: #FF5E8D;
+            animation: rotate 2s linear infinite;
+        }
+
+        .percentage {
+            color: #FFF;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #FF5E8D, 0 0 20px #FF5E8D;
+            z-index: 10;
+        }
+
+        
+        .particle-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: #FF5E8D;
+            animation: particle-fade 1s ease-out forwards;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes particle-fade {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
+        #fileInput {
+          display: none;
+        }
+        #volumeSlider, #playPauseButton {
+          position: fixed;
+          bottom: 20px;
+          z-index: 999;
+        }
+        #volumeSlider {
+          left: 50%;
+          transform: translateX(-50%);
+          width: 200px;
+        }
+        #playPauseButton {
+          left: 10px;
+          padding: 10px 20px;
+          background-color: #000;
+          color: #fff;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+        }
+        #onboarding-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.7);
+        z-index: 100;
+        color: white;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        font-size: 1.2rem;
+        opacity: 0;
+        transition: opacity 0.5s;
+        
+      }
+
+  
+      #onboarding-overlay.visible {
+        opacity: 1;
+      }
+  
+      #onboarding-overlay button {
+        margin-top: 15px;
+        padding: 10px 30px;
+        background: #ff4d4d;
+        color: white;
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        font-size: 1rem;
+        animation: morph 1.5s infinite alternate;
+      }
+  
+      @keyframes morph {
+        0% {
+          transform: scale(1);
+          background: #ff4d4d;
+          border-radius: 8px;
+        }
+        100% {
+          transform: scale(1.1);
+          background: #ff8080;
+          border-radius: 50%;
+        }
+      }
+      </style>
+    
+    <title>OTT'tz theatre on desk</title>
+  </head>
+  <body>
+    <div class="overlay1" id="loadingOverlay1">
+      <div class="loading-container">
+          <div class="particle-bg"></div>
+          <div class="loading-clock">
+              <div class="circle"></div>
+              <div class="percentage" id="percentage1">0%</div>
+          </div>
+          
+      </div>
+  </div>
+    <input type="file" id="fileInput" accept="video/*" onchange="loadVideo(event)">
+    
+    <!-- Volume slider -->
+    <input 
+      type="range" 
+      id="volumeSlider" 
+      min="0" 
+      max="5" 
+      step="0.1" 
+      value="1" 
+      title="Volume Control" 
+      style="display: none;">
+    
+      <!-- Onboarding Overlay -->
+  <div id="onboarding-overlay" class="visible">
+    <div>
+      <p id="instruction">Welcome! Press the "W" button to move forward.</p>
+    </div>
+  </div>
+   
+
+
+    <!-- Play/Pause button -->
+    <button id="playPauseButton" style="display: none;">Play</button>
+
+    <a-scene>
+      <a-sky color="#ECECEC"></a-sky>
+      <a-light type="ambient" intensity="1.5" color="#ffffff"></a-light>
+
+
+    <a-scene physics="debug: true">
+      <!-- Ground Plane -->
+      <a-plane id="ground"
+        rotation="-90 0 0"
+        width="88"
+        height="66"
+        color="#0d0d0d"
+        static-body>
+      </a-plane>
+
+      <!-- GLTF Model above the ground plane -->
+      <a-entity gltf-model="url(theatre.gltf)" 
+        position="0 1 0" 
+        scale="2 2 2">
+      </a-entity>
+
+      <a-plane id="videoPlane" 
+         position="0 13.9 9" 
+         rotation="0 360 0"
+         width="70" 
+         height="22.3" 
+         visible="true"
+         material="shader: flat; src: #videoElement;">
+      </a-plane>
+
+      <!-- User (Camera) -->
+      <a-entity id="player"
+        camera
+        position="0 3 37"
+        look-controls="pointerLockEnabled: true"
+        wasd-controls restrict-movement
+        shaking-camera>
+      </a-entity>
+    </a-scene>
+
+    <script>
+      const percentageElement = document.getElementById("percentage1");
+      const overlay1= document.getElementById("loadingOverlay1");
+      const container = document.querySelector(".particle-bg");
+
+      let percentage = 0;
+
+      function createParticle() {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.animation = `particle-fade ${Math.random() * 1 + 0.5}s ease-out forwards`;
+
+          container.appendChild(particle);
+
+          setTimeout(() => {
+              particle.remove();
+          }, 1000);
+      }
+
+      function updatePercentage() {
+          if (percentage <= 100) {
+              percentageElement.textContent = `${percentage}%`;
+              createParticle();
+              percentage += 1;
+
+              setTimeout(updatePercentage, 50); // Adjust for slower/faster loading
+          } else {
+              // Fade out the overlay when done
+              overlay1.classList.add("hidden");
+          }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          updatePercentage();
+      });
+  </script>
+    
+
+    <script>
+      let isShaking = false;
+      const camera = document.querySelector("#player");
+    
+      function shakeCamera(intensity = 0.01, duration = 500) {
+        if (isShaking) return; // Prevent overlapping shakes
+        isShaking = true;
+    
+        const start = Date.now();
+        const originalPosition = camera.object3D.position.clone();
+    
+        const shake = () => {
+          const elapsed = Date.now() - start;
+    
+          if (elapsed < duration) {
+            const offsetX = (Math.random() - 0.5) * intensity;
+            const offsetY = (Math.random() - 0.5) * intensity;
+            const offsetZ = (Math.random() - 0.5) * intensity;
+    
+            camera.object3D.position.set(
+              originalPosition.x + offsetX,
+              originalPosition.y + offsetY,
+              originalPosition.z + offsetZ
+            );
+    
+            requestAnimationFrame(shake); 
+          } else {
+            // Reset position after shaking
+            camera.object3D.position.copy(originalPosition);
+            isShaking = false;
+          }
+        };
+    
+        shake();
+      }
+    
+      // Trigger shake on keypress 'f' (airplane mode or immersive experience)
+      document.addEventListener("keydown", (event) => {
+        if (event.key.toLowerCase() === "f") {
+          shakeCamera(0.01, 300); // Intensity and duration can be adjusted
+        }
+      });
+    
+      // Trigger shake based on sound level (optional)
+      function shakeWithSoundLevel() {
+        if (audioContext && gainNode) {
+          const analyser = audioContext.createAnalyser();
+          sourceNode.connect(analyser);
+    
+          const dataArray = new Uint8Array(analyser.frequencyBinCount);
+          const checkAudioLevel = () => {
+            analyser.getByteFrequencyData(dataArray);
+            const average = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+    
+            if (average > 50) { // Adjust threshold for shaking
+              shakeCamera(0.01, 500);
+            }
+    
+            requestAnimationFrame(checkAudioLevel);
+          };
+    
+          checkAudioLevel();
+        }
+      }
+    
+      // Start monitoring sound levels when a video is loaded
+      fileInput.addEventListener("change", () => {
+        setTimeout(shakeWithSoundLevel, 1000); // Slight delay to ensure video is ready
+      });
+    </script>
+    
+ 
+
+<script>
+
+        const fileInput = document.querySelector("#fileInput");
+        const videoPlane = document.querySelector("#videoPlane");
+        const volumeSlider = document.querySelector("#volumeSlider");
+        const playPauseButton = document.querySelector("#playPauseButton");
+  
+        let video, audioContext, gainNode, sourceNode;
+        
+      // Adjust volume with slider
+      volumeSlider.addEventListener("input", (event) => {
+        if (gainNode) {
+          gainNode.gain.value = event.target.value;
+        }
+      });
+
+      // Play/Pause video
+      playPauseButton.addEventListener("click", () => {
+        togglePlayPause();
+      });
+
+      function togglePlayPause() {
+        if (video) {
+          if (video.paused) {
+            video.play();
+            playPauseButton.textContent = "Pause";
+          } else {
+            video.pause();
+            playPauseButton.textContent = "Play";
+          }
+        }
+      }
+
+
+
+
+      // Keyboard controls
+      window.addEventListener("keydown", (event) => {
+        if (event.key.toLowerCase() === "l") {
+          fileInput.click();
+        }
+
+        if (gainNode) {
+          if (event.key === "=") {
+            volumeSlider.value = Math.min(5, parseFloat(volumeSlider.value) + 0.1);
+            volumeSlider.dispatchEvent(new Event("input"));
+          } else if (event.key === "-") {
+            volumeSlider.value = Math.max(0, parseFloat(volumeSlider.value) - 0.1);
+            volumeSlider.dispatchEvent(new Event("input"));
+          }
+
+          if (event.key === "ArrowRight") {
+            video.currentTime = Math.min(video.duration, video.currentTime + 10);
+          } else if (event.key === "ArrowLeft") {
+            video.currentTime = Math.max(0, video.currentTime - 10);
+          }
+
+          // Prevent default fullscreen behavior
+
+          // Toggle Play/Pause with Space key
+          if (event.key === " ") {
+            event.preventDefault(); // Prevent scrolling with Space
+            togglePlayPause();
+          }
+        }
+      });
+      
+
+</script>
+
+<script>
+        // Steps for onboarding
+        const steps = [
+          { instruction: "Welcome! Press the 'W' button to move forward.", key: "w" },
+          { instruction: "Great! Press the 'S' button to move backward.", key: "s" },
+          { instruction: "Now press the 'A' button to move left.", key: "a" },
+          { instruction: " Press the 'D' button to move right.", key: "d" },
+          { instruction: " Press the 'L' button to movie selection", key: "l" },
+          { instruction: " Press the 'spacebar' button to pause movie", key: " " },
+          { instruction: " press the 'arrow ->' button to skip scene  ", key:"arrowright"},
+          { instruction: " press the '<- arrow ' button to rewind scene ", key:"arrowleft"},
+          { instruction: " press the '=' button to increase volume ", key:"="},
+          { instruction: " press the '-' button to decrease volume ", key:"-"},
+          { instruction: " press the 'airplane' button & click f for Immersive Experience", key:"f"},
+          
+        ];
+
+
+    
+        let currentStep = 0;
+    
+        const overlay = document.getElementById("onboarding-overlay");
+        const instruction = document.getElementById("instruction");
+    
+        function showInstruction() {
+          instruction.textContent = steps[currentStep].instruction;
+          overlay.classList.add("visible");
+        }
+    
+        function hideInstruction() {
+          overlay.classList.remove("visible");
+        }
+    
+        function delayNextStep(callback, delay = 2000) {
+          setTimeout(() => {
+            callback();
+          }, delay);
+        }
+    
+        document.addEventListener("keydown", (event) => {
+          const key = event.key.toLowerCase();
+    
+          // Check if the key matches the current step
+          if (steps[currentStep] && key === steps[currentStep].key) {
+            currentStep++;
+            hideInstruction();
+    
+            if (currentStep < steps.length) {
+              // Delay before showing the next instruction
+              delayNextStep(() => {
+                showInstruction();
+              }, 3000); // 3-second gap between steps
+            } 
+          }
+        });
+        // Show the first instruction
+        showInstruction();
+
+        
+  
+      </script>
+
+<script>
+
+  // Function to load and display the selected video
+function loadVideo(event) {
+const file = event.target.files[0];
+
+// Check if the browser supports localStorage
+if (!window.localStorage) {
+    alert("Your browser does not support local storage.");
+    return;
+}
+
+// Retrieve counter and timestamp from localStorage
+let triggerCounter = parseInt(localStorage.getItem("videoTriggerCounter")) || 0;
+let lastTriggerTime = parseInt(localStorage.getItem("lastTriggerTime")) || 0;
+
+// Calculate time elapsed since last trigger
+const currentTime = Date.now();
+const timeElapsed = currentTime - lastTriggerTime;
+
+// 24-hour duration in milliseconds
+const twentyFourHours = 1 * 1 * 60 * 1000;
+
+if (timeElapsed >= twentyFourHours) {
+    // Reset counter and timestamp after 24 hours
+    triggerCounter = 0;
+    localStorage.setItem("videoTriggerCounter", triggerCounter);
+    localStorage.setItem("lastTriggerTime", currentTime);
+}
+
+if (triggerCounter >= 1) {
+    alert("playing the movie , next movie wait for 24 hours");
+    return;
+}
+
+if (file && file.type.startsWith("video")) {
+    const video = document.createElement("video");
+    video.src = URL.createObjectURL(file);
+    video.crossOrigin = "anonymous";
+    video.loop = false; // Disable looping to allow for reset
+    video.autoplay = true;
+    video.muted = false;
+
+    // Web Audio API for volume amplification
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const sourceNode = audioContext.createMediaElementSource(video);
+    const gainNode = audioContext.createGain();
+    sourceNode.connect(gainNode).connect(audioContext.destination);
+
+    // Adjust volume based on slider
+    gainNode.gain.value = volumeSlider.value;
+
+    video.play();
+
+    // Video texture for Three.js
+    const videoTexture = new THREE.VideoTexture(video);
+    videoTexture.encoding = THREE.sRGBEncoding; // Enhance color representation
+    videoTexture.minFilter = THREE.LinearFilter;
+    videoTexture.magFilter = THREE.LinearFilter;
+    videoTexture.format = THREE.RGBAFormat;
+
+    videoPlane.setAttribute("material", "src", videoTexture);
+    videoPlane.setAttribute("visible", true);
+
+    // Display controls
+    volumeSlider.style.display = "block";
+    playPauseButton.style.display = "block";
+    playPauseButton.textContent = "Pause";
+
+    // Reset to white screen when video ends
+    video.addEventListener("ended", resetToWhiteScreen);
+
+    // Increment the counter and save it along with the current timestamp
+    triggerCounter++;
+    localStorage.setItem("videoTriggerCounter", triggerCounter);
+    localStorage.setItem("lastTriggerTime", currentTime);
+
+    console.log("Video loaded successfully. Trigger count:", triggerCounter);
+} else {
+    alert("Please upload a valid video file.");
+}
+}
+
+// Add event listener to the file input element
+document.getElementById("fileInput").addEventListener("change", loadVideo);
+
+
+
+
+  // Reset video screen when the video ends
+  function resetToWhiteScreen() {
+    videoPlane.setAttribute("visible", true); // Hide the video plane
+    videoPlane.removeAttribute("material");   // Remove the video material
+    volumeSlider.style.display = "none";      // Hide the volume slider
+    playPauseButton.style.display = "none";   // Hide the play/pause button
+  }
+
+</script>
+
+    <script>
+        
+      AFRAME.registerComponent('restrict-movement', {
+  schema: {
+    boundaryWidth: { type: 'number', default: 60 },
+    boundaryHeight: { type: 'number', default: 60 },
+  },
+
+  tick: function () {
+    const position = this.el.object3D.position;
+
+    // Restrict movement within boundaries
+    const halfWidth = this.data.boundaryWidth;
+    const halfHeight = this.data.boundaryHeight;
+
+    position.x = Math.max(-halfWidth, Math.min(halfWidth, position.x));
+    position.z = Math.max(-halfHeight, Math.min(halfHeight, position.z));
+  }
+});
+
+    </script>
+    
+  </body>
+</html>
