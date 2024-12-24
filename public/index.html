@@ -111,8 +111,9 @@
          data-context="signin"
          data-callback="handleCredentialResponse"
          data-auto_prompt="false">
+        <div class="g_id_signin" data-type="standard" id="google-signin"></div>
     </div>
-</div>
+
     
     <!-- Display User Information -->
     <div id="user-info" style="margin-top: 20px;">
@@ -227,6 +228,9 @@
 
     <script>
     // Select elements
+    const signInButton = document.getElementById("google-signin");
+    signInButton.classList.add("hidden");
+
     const popupBtn = document.getElementById('g_id_onload');
     const popupBar = document.getElementById('user-info');
     const closeBtn = document.querySelector('.close-btn');
