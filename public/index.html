@@ -144,17 +144,7 @@
                 });
 
                 if (!res.ok) throw new Error("Failed to update user info");
-                navigateToPage();
-
-                // Redirect user to the main webpage after successful login
-               function navigateToPage() {
-    try {
-        window.location.href = "https://otttz.netlify.app/web.html";
-    } catch (error) {
-        console.error("Navigation failed:", error);
-    }
-}
-
+                window.location.href = "web.html";  // Rep
 // Call the function when needed
 
 // Replace with the actual webpage URL
