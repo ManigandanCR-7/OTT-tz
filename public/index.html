@@ -32,7 +32,7 @@
             margin: 0 auto;
             position: absolute;
             bottom: 220px;
-            left: 50%;
+            left: 70%;
             transform: translateX(-50%);
             text-align: center;
             
@@ -99,7 +99,7 @@
     <div class="video-container">
         <!-- Background Video -->
         <video autoplay muted loop id="background-video">
-            <source src="OTT-tz/avc_Untitled video - Made with Clipchamp (43).mp" type="video/mp4">
+            <source src="avc_Untitled video - Made with Clipchamp (43).mp" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
@@ -150,7 +150,7 @@
                 if (!res.ok) throw new Error("Failed to update user info");
 
                 // Redirect user to the main webpage after successful login
-                window.location.href = "OTT-tz/web.html; // Replace with the actual webpage URL
+                window.location.href = "web.html; // Replace with the actual webpage URL
             } catch (error) {
                 console.error("Error during credential handling:", error);
                 alert(`Error: ${error.message}`);
