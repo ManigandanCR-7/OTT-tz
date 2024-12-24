@@ -8,15 +8,14 @@
             background: #000; /* Royal black theme */
             color: #fff;
         }
+        
         .video-container {
-    position: relative;
-    height: 100vh;  /* Full height of the viewport */
-    width: 100vw;   /* Full width of the viewport */
-    overflow: hidden;  /* Ensures that any overflow is hidden */
-    
-    background: url('avc_Untitled video - Made with Clipchamp (43).mp4') no-repeat center center;
-    background-size: cover;
-}
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+        }
+
         #background-video {
             position: absolute;
             top: 50%;
@@ -26,6 +25,7 @@
             min-width: 100%;
             object-fit: cover;
         }
+       
 
         #google-signin {
             width: 400px; /* Increased width */
@@ -98,8 +98,15 @@
 </head>
 <body>
 
-    <div class="video-container"></div>
-    <!-- Google Sign-In Button -->
+    <div class="video-container">
+        <!-- Background Video -->
+        <video autoplay muted loop id="background-video">
+            <source src="avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        
+    </div>
+    
     <div id="g_id_onload"
          data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
          data-context="signin"
