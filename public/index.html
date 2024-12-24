@@ -123,61 +123,107 @@
     </div>
 
     <script>
-        async function handleCredentialResponse(response) {
-            try {
-                const idToken = response.credential;
-                const payload = JSON.parse(atob(idToken.split(".")[1]));
+    // Function to save data in cookies
+    function setCookie(name, value, days) {
+        const date = new Date();
+        date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+        const expires = `expires=${date.toUTCString()}`;
+        document.cookie = `${name}=${value}; ${expires}; path=/`;
+    }
 
-                const userData = {
-                    name: payload.name,
-                    email: payload.email,
-                    picture: payload.picture,
-                    credits: 100  // Set initial credits
-                };
-
-                console.log("Decoded Payload:", payload);
-                console.log("Constructed User Data:", userData);
-
-                // Send user info to the backend Netlify function
-                const requestBody = JSON.stringify(userData);
-
-                console.log("Request Body:", requestBody);
-
-                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: requestBody
-                });
-
-                console.log("Response Status:", res.status);
-
-                // Parse the backend response
-                const result = await res.json();
-
-                if (!res.ok) {
-                    console.error("Error Response:", result);
-                    throw new Error(
-                        `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
-                    );
-                }
-
-                console.log("Backend Success Response:", result);
-                alert("Data updated successfully!");
-
-                // Update the UI with user information
-                document.getElementById("user-name").innerText = userData.name;
-                document.getElementById("user-email").innerText = userData.email;
-                const imgElement = document.getElementById("user-picture");
-                imgElement.src = userData.picture;
-                imgElement.style.display = "block";
-            } catch (error) {
-                console.error("Error during credential handling:", error);
-                alert(`Error: ${error.message}`);
+    // Function to retrieve data from cookies
+    function getCookie(name) {
+        const nameEQ = `${name}=`;
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.indexOf(nameEQ) === 0) {
+                return cookie.substring(nameEQ.length, cookie.length);
             }
         }
-    </script>
+        return null;
+    }
+
+    // Function to handle the credential response
+    async function handleCredentialResponse(response) {
+        try {
+            const idToken = response.credential;
+            const payload = JSON.parse(atob(idToken.split(".")[1]));
+
+            const userData = {
+                name: payload.name,
+                email: payload.email,
+                picture: payload.picture,
+                credits: 100 // Set initial credits
+            };
+
+            console.log("Decoded Payload:", payload);
+            console.log("Constructed User Data:", userData);
+
+            // Save user data to cookies
+            setCookie("userName", userData.name, 7); // Save for 7 days
+            setCookie("userEmail", userData.email, 7);
+            setCookie("userPicture", userData.picture, 7);
+            setCookie("userCredits", userData.credits, 7);
+
+            // Send user info to the backend Netlify function
+            const requestBody = JSON.stringify(userData);
+
+            console.log("Request Body:", requestBody);
+
+            const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: requestBody
+            });
+
+            console.log("Response Status:", res.status);
+
+            // Parse the backend response
+            const result = await res.json();
+
+            if (!res.ok) {
+                console.error("Error Response:", result);
+                throw new Error(
+                    `Backend error - Status: ${res.status}, Message: ${result.message || "Unknown error"}`
+                );
+            }
+
+            console.log("Backend Success Response:", result);
+            alert("Data updated successfully!");
+
+            // Update the UI with user information
+            document.getElementById("user-name").innerText = userData.name;
+            document.getElementById("user-email").innerText = userData.email;
+            const imgElement = document.getElementById("user-picture");
+            imgElement.src = userData.picture;
+            imgElement.style.display = "block";
+        } catch (error) {
+            console.error("Error during credential handling:", error);
+            alert(`Error: ${error.message}`);
+        }
+    }
+
+    // Load user data from cookies on page load
+    window.addEventListener("DOMContentLoaded", () => {
+        const savedName = getCookie("userName");
+        const savedEmail = getCookie("userEmail");
+        const savedPicture = getCookie("userPicture");
+        const savedCredits = getCookie("userCredits");
+
+        if (savedName && savedEmail && savedPicture) {
+            document.getElementById("user-name").innerText = savedName;
+            document.getElementById("user-email").innerText = savedEmail;
+            const imgElement = document.getElementById("user-picture");
+            imgElement.src = savedPicture;
+            imgElement.style.display = "block";
+            console.log(`Loaded saved user data: Name=${savedName}, Email=${savedEmail}, Credits=${savedCredits}`);
+        }
+    });
+</script>
+
     <script>
     // Select elements
     const popupBtn = document.getElementById('g_id_onload');
