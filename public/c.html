@@ -275,7 +275,7 @@
       }
 
       function updatePercentage() {
-          if (percentage <= 100) {
+          if (percentage <= 120) {
               percentageElement.textContent = `${percentage}%`;
               createParticle();
               percentage += 1;
@@ -364,17 +364,76 @@
       });
     </script>
     
- 
+    <script>
+      const fileInput = document.querySelector("#fileInput");
+      const videoPlane = document.querySelector("#videoPlane");
+      const volumeSlider = document.querySelector("#volumeSlider");
+      const playPauseButton = document.querySelector("#playPauseButton");
 
-<script>
+      let video, audioContext, gainNode, sourceNode;
+      
 
-        const fileInput = document.querySelector("#fileInput");
-        const videoPlane = document.querySelector("#videoPlane");
-        const volumeSlider = document.querySelector("#volumeSlider");
-        const playPauseButton = document.querySelector("#playPauseButton");
-  
-        let video, audioContext, gainNode, sourceNode;
-        
+      // Function to load and display the selected video
+      function loadVideo(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith("video")) {
+          video = document.createElement("video");
+          video.src = URL.createObjectURL(file);
+          video.crossOrigin = "anonymous";
+          video.loop = false; // Disable looping to allow for reset
+          video.autoplay = true;
+          video.muted = false;
+
+          // Web Audio API for volume amplification
+          audioContext = new (window.AudioContext || window.webkitAudioContext)();
+          sourceNode = audioContext.createMediaElementSource(video);
+          gainNode = audioContext.createGain();
+          sourceNode.connect(gainNode).connect(audioContext.destination);
+
+          gainNode.gain.value = volumeSlider.value;
+
+          video.play();
+
+          const videoTexture = new THREE.VideoTexture(video);
+          videoTexture.encoding = THREE.sRGBEncoding; // Enhance color representation
+          videoTexture.minFilter = THREE.LinearFilter;
+          videoTexture.magFilter = THREE.LinearFilter;
+          videoTexture.format = THREE.RGBAFormat;
+
+          videoPlane.setAttribute("material", "src", videoTexture);
+          videoPlane.setAttribute("visible", true);
+
+          volumeSlider.style.display = "block";
+          playPauseButton.style.display = "block";
+          playPauseButton.textContent = "Pause";
+
+          // Reset to white screen when video ends
+          video.addEventListener("ended", resetToWhiteScreen);
+        }
+      }
+
+      // Reset video screen when the video ends
+      let counter = 0; // Initialize the counter
+
+function resetToWhiteScreen() {
+  alert("Wait for 24 hours ,no more credits available ");
+    counter++;
+
+    videoPlane.setAttribute("visible", true); // Make the video plane visible
+    videoPlane.removeAttribute("material"); // Remove the video material
+    volumeSlider.style.display = "none"; // Hide the volume slider
+    playPauseButton.style.display = "none"; // Hide the play/pause button
+
+    // Increment the counter
+
+    // Check if the counter is greater than or equal to 1
+    if (counter = 1) {
+        // Redirect to another webpage
+        window.location.href = "index.html"; // Change this URL to the desired page
+    }
+}
+
+
       // Adjust volume with slider
       volumeSlider.addEventListener("input", (event) => {
         if (gainNode) {
@@ -432,11 +491,9 @@
           }
         }
       });
+    </script>
       
-
-</script>
-
-<script>
+      <script>
         // Steps for onboarding
         const steps = [
           { instruction: "Welcome! Press the 'W' button to move forward.", key: "w" },
@@ -498,104 +555,7 @@
   
       </script>
 
-<script>
 
-  // Function to load and display the selected video
-function loadVideo(event) {
-const file = event.target.files[0];
-
-// Check if the browser supports localStorage
-if (!window.localStorage) {
-    alert("Your browser does not support local storage.");
-    return;
-}
-
-// Retrieve counter and timestamp from localStorage
-let triggerCounter = parseInt(localStorage.getItem("videoTriggerCounter")) || 0;
-let lastTriggerTime = parseInt(localStorage.getItem("lastTriggerTime")) || 0;
-
-// Calculate time elapsed since last trigger
-const currentTime = Date.now();
-const timeElapsed = currentTime - lastTriggerTime;
-
-// 24-hour duration in milliseconds
-const twentyFourHours = 1 * 1 * 60 * 1000;
-
-if (timeElapsed >= twentyFourHours) {
-    // Reset counter and timestamp after 24 hours
-    triggerCounter = 0;
-    localStorage.setItem("videoTriggerCounter", triggerCounter);
-    localStorage.setItem("lastTriggerTime", currentTime);
-}
-
-if (triggerCounter >= 1) {
-    alert("playing the movie , next movie wait for 24 hours");
-    return;
-}
-
-if (file && file.type.startsWith("video")) {
-    const video = document.createElement("video");
-    video.src = URL.createObjectURL(file);
-    video.crossOrigin = "anonymous";
-    video.loop = false; // Disable looping to allow for reset
-    video.autoplay = true;
-    video.muted = false;
-
-    // Web Audio API for volume amplification
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const sourceNode = audioContext.createMediaElementSource(video);
-    const gainNode = audioContext.createGain();
-    sourceNode.connect(gainNode).connect(audioContext.destination);
-
-    // Adjust volume based on slider
-    gainNode.gain.value = volumeSlider.value;
-
-    video.play();
-
-    // Video texture for Three.js
-    const videoTexture = new THREE.VideoTexture(video);
-    videoTexture.encoding = THREE.sRGBEncoding; // Enhance color representation
-    videoTexture.minFilter = THREE.LinearFilter;
-    videoTexture.magFilter = THREE.LinearFilter;
-    videoTexture.format = THREE.RGBAFormat;
-
-    videoPlane.setAttribute("material", "src", videoTexture);
-    videoPlane.setAttribute("visible", true);
-
-    // Display controls
-    volumeSlider.style.display = "block";
-    playPauseButton.style.display = "block";
-    playPauseButton.textContent = "Pause";
-
-    // Reset to white screen when video ends
-    video.addEventListener("ended", resetToWhiteScreen);
-
-    // Increment the counter and save it along with the current timestamp
-    triggerCounter++;
-    localStorage.setItem("videoTriggerCounter", triggerCounter);
-    localStorage.setItem("lastTriggerTime", currentTime);
-
-    console.log("Video loaded successfully. Trigger count:", triggerCounter);
-} else {
-    alert("Please upload a valid video file.");
-}
-}
-
-// Add event listener to the file input element
-document.getElementById("fileInput").addEventListener("change", loadVideo);
-
-
-
-
-  // Reset video screen when the video ends
-  function resetToWhiteScreen() {
-    videoPlane.setAttribute("visible", true); // Hide the video plane
-    videoPlane.removeAttribute("material");   // Remove the video material
-    volumeSlider.style.display = "none";      // Hide the volume slider
-    playPauseButton.style.display = "none";   // Hide the play/pause button
-  }
-
-</script>
 
     <script>
         
