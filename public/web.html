@@ -1,24 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aesthetic Video Background</title>
     <style>
-        /* General Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
         body {
             font-family: Arial, sans-serif;
-            overflow: hidden;
+            margin: 0;
+            padding: 0;
+            background: #000; /* Royal black theme */
+            color: #fff;
         }
-    
-   
-        /* Video Container */
         .video-container {
             position: relative;
             height: 100vh;
@@ -36,147 +25,90 @@
             object-fit: cover;
         }
 
-        /* Overlay Layer */
-        .overlay {
+        #google-signin {
+            width: 400px; /* Increased width */
+            height: 80px;
+            border-radius: 10%;
+            margin: 0 auto;
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8); /* Transparent dark overlay */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 10;
-            transition: opacity 0.8s ease, visibility 0.8s ease;
-        }
-
-        .overlay.hidden {
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .overlay-content {
+            bottom: 220px;
+            left: 53%;
+            transform: translateX(-50%);
             text-align: center;
-            color: white;
+            
+            transition: transform 0.3s ease;
+            z-index: 2; /* Ensure it stays on top */
         }
 
-        .overlay-content h1 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
+        .blur-slide {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background-color: rgba(0, 0, 0, 0); /* Transparent inside */
+    border-radius: 20px;
+    border: 3px solid rgba(0, 122, 255, 0.5); /* Light border to create hollow effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    left: 35%;
+    top: 13%;
+    font-size: 12px;
+    font-family: Arial, sans-serif;
+    flex-direction: column; /* Align content vertically */
+    text-align: center; /* Center the text inside */
+    padding: 20px; /* Add some padding inside */
+}
 
-        .overlay-content button {
-            padding: 15px 30px;
-            font-size: 1.2rem;
-            color: white;
-            background: rgba(255, 255, 255, 0.3);
-            border: 2px solid white;
-            border-radius: 30px;
-            cursor: pointer;
-            backdrop-filter: blur(5px);
-            transition: background 0.3s ease, color 0.3s ease;
-        }
+.blur-slide h2 {
+    font-size: 24px; /* Larger font for the heading */
+    font-weight: bold;
+    color: #00aaff; /* Blueish color for heading */
+    margin-bottom: 10px; /* Space below the heading */
+    text-shadow: 0 0 10px rgba(0, 122, 255, 0.7); /* Add some glow effect */
+}
 
-        .overlay-content button:hover {
-            background: rgba(255, 255, 255, 0.6);
-            color: black;
-        }
+.blur-slide p {
+    font-size: 14px; /* Slightly larger font size for the paragraph */
+    color: rgba(255, 255, 255, 0.8); /* Semi-transparent white color */
+    line-height: 1.6; /* Increased line height for better readability */
+    margin: 10px 0;
+    text-shadow: 0 0 5px rgba(0, 122, 255, 0.6); /* Subtle glow effect on text */
+}
 
-        /* Navigation Bar */
-        .navbar {
-            position: absolute;
-            top: 20px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            z-index: 5;
-        }
+.blur-slide h1{
+    color: #00aaff; /* Blue color for links */
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 15px;
+    text-shadow: 0 0 5px rgba(0, 122, 255, 0.6); /* Glowing effect for links */
+}
 
-        .navbar ul {
-            list-style: none;
-            display: flex;
-            gap: 50px;
-        }
+.blur-slide a:hover {
+    text-decoration: underline;
+    color: #00e0ff; /* Change color when hovering */
+}
 
-        .navbar a {
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            padding: 5px 10px;
-            transition: background 0.3s ease;
-        }
-
-        .navbar a:hover {
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 30px;
-        }
-
-        /* CTA Button */
-        .cta {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 5;
-        }
-
-        .cta-button {
-            display: inline-block;
-            padding: 15px 30px;
-            color: white;
-            font-size: 1.2rem;
-            font-weight: bold;
-            text-decoration: none;
-            background: rgba(255, 255, 255, 0.3);
-            border: 2px solid white;
-            border-radius: 30px;
-            backdrop-filter: blur(5px);
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .cta-button::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(255, 255, 255, 0.6);
-            transform: skewX(-25deg);
-            transition: all 0.4s ease-in-out;
-        }
-
-        .cta-button:hover::before {
-            left: 120%;
-        }
-
-        .cta-button:hover {
-            background: rgba(255, 255, 255, 0.6);
-            color: black;
-        }
-
-        /* Responsive Adjustments */
-        @media (max-width: 768px) {
-            .navbar ul {
-                gap: 10px;
+        
+        @keyframes bloom {
+            0%, 100% {
+                box-shadow: 0 0 40px rgba(0, 122, 255, 0.8);
             }
-
-            .cta-button {
-                font-size: 1rem;
+            50% {
+                box-shadow: 0 0 100px rgba(0, 122, 255, 1);
             }
         }
+
     </style>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OTT'tz Theatre on Desk</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
-    
-    
-    <!-- Video Container -->
+
     <div class="video-container">
         <!-- Background Video -->
         <video autoplay muted loop id="background-video">
@@ -184,49 +116,74 @@
             Your browser does not support the video tag.
         </video>
 
-        <!-- Navigation Bar -->
-        <nav class="navbar">
-            <ul>
-                <li><a href="" class="cta-button">OTT'tz</a></li>
-                <li><a href="https://www.linkedin.com/company/nilofer-micro-inc"class="cta-button">about</a></li>
-                <li><a href="https://calendly.com/manigandan-3d-cursor-addict/30min" class="cta-button">Contact</a></li>
-            </ul>
-        </nav>
-
-        <!-- CTA Button -->
-        <div class="cta">
-            <a href="c.html" class="cta-button">Grab your seat</a>
-        </div>
+<div class="blur-slide">
+    <h1> OTT'tz  Welcomes you !  </h1>
+        <br>
+        <h2></h2>
+        <h2></h2>
+        <h3></h3>
+    <!-- Google Sign-In Button -->
+    <div id="g_id_onload"
+         data-client_id="382027941440-35fmph7hti4d30rb5fcaposg1nvcltmt.apps.googleusercontent.com"
+         data-context="signin"
+         data-callback="handleCredentialResponse"
+         data-auto_prompt="false">
     </div>
-
-    <!-- Overlay for Enable Sound -->
-    <div class="overlay" id="sound-overlay">
-        <div class="overlay-content">
-            <button id="enable-sound">Enable Sound</button>
-        </div>
-    </div>
-
-    <!-- Background Music -->
-    <audio id="background-music" loop>
-        <source src="Zoe Saldaña - The Songcord (From Avatar_ The Way of WaterAudio Only).mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
+    <h2></h2>
+    <h2></h2>
+    <p> to Enter World's #1 theatre on desk !</p>
     
 
-    
+</div>
 
-      </script>
+    <div class="g_id_signin" id="google-signin"></div>
+
+
+
+
+    <h3>your movie </h3>
     <script>
-        // Music and overlay handling
-        const music = document.getElementById('background-music');
-        const overlay = document.getElementById('sound-overlay');
-        const enableSoundButton = document.getElementById('enable-sound');
+        // Function to handle the credential response
+        async function handleCredentialResponse(response) {
+            try {
+                const idToken = response.credential;
+                const payload = JSON.parse(atob(idToken.split(".")[1]));
 
-        // Enable sound and fade out overlay
-        enableSoundButton.addEventListener('click', () => {
-            music.play();
-            overlay.classList.add('hidden'); // Add 'hidden' class to fade out overlay
-        });
+                const userData = {
+                    name: payload.name,
+                    email: payload.email,
+                    picture: payload.picture,
+                    credits: 100 // Set initial credits
+                };
+
+                // Save user data to cookies
+                setCookie("userName", userData.name, 7);
+                setCookie("userEmail", userData.email, 7);
+                setCookie("userPicture", userData.picture, 7);
+                setCookie("userCredits", userData.credits, 7);
+
+                // Simulated backend interaction
+                const res = await fetch("https://otttz.netlify.app/.netlify/functions/updateUserInfo", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(userData),
+                });
+
+                if (!res.ok) throw new Error("Failed to update user info");
+
+                // Redirect user to the main webpage after successful login
+                window.location.href = "https://otttz.netlify.app/home"; // Replace with the actual webpage URL
+            } catch (error) {
+                console.error("Error during credential handling:", error);
+                alert(`Error: ${error.message}`);
+            }
+        }
+
+        // Utility function to set cookies
+        function setCookie(name, value, days) {
+            const expires = new Date(Date.now() + days * 864e5).toUTCString();
+            document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
+        }
     </script>
 </body>
 </html>
