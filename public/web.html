@@ -17,7 +17,100 @@
             overflow: hidden;
         }
     
-   
+        .overlay1{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            transition: opacity 1s ease-out, visibility 1s ease-out;
+        }
+
+        .overlay1.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+  
+        .loading-container {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .loading-clock {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .circle {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            border-top-color: #FF5E8D;
+            animation: rotate 2s linear infinite;
+        }
+
+        .percentage {
+            color: #FFF;
+            font-size: 2rem;
+            font-weight: bold;
+            text-shadow: 0 0 10px #FF5E8D, 0 0 20px #FF5E8D;
+            z-index: 10;
+        }
+
+        
+        .particle-bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: #FF5E8D;
+            animation: particle-fade 1s ease-out forwards;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes particle-fade {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+        }
+
         /* Video Container */
         .video-container {
             position: relative;
@@ -174,7 +267,17 @@
     </style>
 </head>
 <body>
-    
+
+    <div class="overlay1" id="loadingOverlay1">
+        <div class="loading-container">
+            <div class="particle-bg"></div>
+            <div class="loading-clock">
+                <div class="circle"></div>
+                <div class="percentage" id="percentage1">0%</div>
+            </div>
+            
+        </div>
+    </div>
     
     <!-- Video Container -->
     <div class="video-container">
@@ -213,9 +316,45 @@
     </audio>
     
 
-    
+    <script>
+      const percentageElement = document.getElementById("percentage1");
+      const overlay1= document.getElementById("loadingOverlay1");
+      const container = document.querySelector(".particle-bg");
 
-      </script>
+      let percentage = 0;
+
+      function createParticle() {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.left = `${Math.random() * 100}%`;
+          particle.style.top = `${Math.random() * 100}%`;
+          particle.style.animation = `particle-fade ${Math.random() * 1 + 0.5}s ease-out forwards`;
+
+          container.appendChild(particle);
+
+          setTimeout(() => {
+              particle.remove();
+          }, 1000);
+      }
+
+      function updatePercentage() {
+          if (percentage <= 50) {
+              percentageElement.textContent = `${percentage}%`;
+              createParticle();
+              percentage += 1;
+
+              setTimeout(updatePercentage, 50); // Adjust for slower/faster loading
+          } else {
+              // Fade out the overlay when done
+              overlay1.classList.add("hidden");
+          }
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+          updatePercentage();
+      });
+  </script>
+
     <script>
         // Music and overlay handling
         const music = document.getElementById('background-music');
