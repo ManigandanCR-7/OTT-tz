@@ -1,7 +1,7 @@
 {
     "name": "theatre on desk platform",
     "short_name": "OTT'tz",
-    "start_url": "https://otttz.netlify.app/index.html",
+    "start_url": "https://otttz.netlify.app",
     "display": "standalone",
     "background_color": "#000000",
     "theme_color": "#000000",
