@@ -1,8 +1,6 @@
 const CACHE_NAME = 'pwa-cache-v1';
 const urlsToCache = [
-  '/',
   'index.html',
-  'app.js',
   'manifest.json',
   'offline.html',
   'OTT'tz 192 logo.png',
@@ -39,7 +37,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request).catch(() => {
-        return caches.match('/offline.html');
+        return caches.match('offline.html');
       });
     })
   );
