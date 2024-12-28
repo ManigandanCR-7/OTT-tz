@@ -230,27 +230,7 @@
         <h3>world's #1 OTT theatre on desk</h3>
      
     </div>
-     <script>
-      // Disable right-click context menu
-      document.addEventListener("contextmenu", (event) => {
-          event.preventDefault();
-          alert("Right-click is disabled on this webpage.");
-      });
-
-      // Disable specific keyboard shortcuts
-      document.addEventListener("keydown", (event) => {
-          // Disable F12 (DevTools), Ctrl+Shift+I, Ctrl+U, etc.
-          if (
-              event.key === "F12" || 
-              (event.ctrlKey && event.shiftKey && event.key === "I") || 
-              (event.ctrlKey && event.key === "U") || 
-              (event.ctrlKey && event.key === "S") // Disable Ctrl+S (Save)
-          ) {
-              event.preventDefault();
-              alert("Viewing the source code is disabled on this webpage.");
-          }
-      });
-  </script>
+    
     <script>
       const percentageElement = document.getElementById("percentage1");
       const overlay1= document.getElementById("loadingOverlay1");
