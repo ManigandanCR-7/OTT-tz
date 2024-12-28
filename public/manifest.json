@@ -1,0 +1,43 @@
+{
+    "name": "theatre on desk platform",
+    "short_name": "OTT'tz",
+    "start_url": "https://otttz.netlify.app/index.html",
+    "display": "standalone",
+    "background_color": "#000000",
+    "theme_color": "#000000",
+    "icons": [
+      {
+        "src": "OTT'tz 192 logo.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "OTT'tz logo 512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
+  
+
+  <script>
+  // Disable right-click context menu
+  document.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+      alert("Right-click is disabled on this webpage.");
+  });
+
+  // Disable specific keyboard shortcuts
+  document.addEventListener("keydown", (event) => {
+      // Disable F12 (DevTools), Ctrl+Shift+I, Ctrl+U, etc.
+      if (
+          event.key === "F12" || 
+          (event.ctrlKey && event.shiftKey && event.key === "I") || 
+          (event.ctrlKey && event.key === "U") || 
+          (event.ctrlKey && event.key === "S") // Disable Ctrl+S (Save)
+      ) {
+          event.preventDefault();
+          alert("Viewing the source code is disabled on this webpage.");
+      }
+  });
+</script>
