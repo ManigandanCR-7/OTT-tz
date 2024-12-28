@@ -7,12 +7,12 @@
     "theme_color": "#000000",
     "icons": [
       {
-        "src": "OTT'tz 192 logo.png",
+        "src": "Component 1.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "OTT'tz logo 512.png",
+        "src": "Group 1.png",
         "sizes": "512x512",
         "type": "image/png"
       }
