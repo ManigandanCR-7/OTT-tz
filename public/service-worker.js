@@ -5,8 +5,8 @@ const urlsToCache = [
   'app.js',
   'manifest.json',
   'offline.html',
-  'images/icon-192x192.png',
-  'images/icon-512x512.png'
+  'OTT'tz 192 logo.png',
+  'OTT'tz logo 512.png'
 ];
 
 // Install
