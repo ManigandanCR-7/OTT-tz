@@ -3,8 +3,8 @@ const urlsToCache = [
   'index.html',
   'manifest.json',
   'offline.html',
-  'OTT'tz 192 logo.png',
-  'OTT'tz logo 512.png'
+  'OTTtz-192-logo.png', // Corrected file names
+  'OTTtz-logo-512.png'
 ];
 
 // Install
@@ -37,7 +37,7 @@ self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request).catch(() => {
-        return caches.match('offline.html');
+        return caches.match('offline.html'); // Make sure offline.html is accessible
       });
     })
   );
