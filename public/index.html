@@ -230,7 +230,35 @@
         <h3>world's #1 OTT theatre on desk</h3>
      
     </div>
+    <button id="installButton" style="display:none;">Install App</button>
 
+<script>
+  let deferredPrompt;
+  const installButton = document.getElementById('installButton');
+
+  window.addEventListener('beforeinstallprompt', (event) => {
+    // Prevent the default prompt
+    event.preventDefault();
+    deferredPrompt = event;
+
+    // Show your custom install button
+    installButton.style.display = 'block';
+
+    // When the button is clicked, show the prompt
+    installButton.addEventListener('click', () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
+    
     <script>
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js').then((registration) => {
