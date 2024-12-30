@@ -268,6 +268,29 @@
             padding: 50px;
             text-align: center;
         }
+
+        .installButton {
+            display: none; /* Hidden by default */
+            padding: 10px 20px;
+            background-color: #007BFF; /* Blue color */
+            color: white; /* White text */
+            font-size: 1rem;
+            font-family: Arial, sans-serif;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .installButton:hover {
+            background-color: #0056b3; /* Darker blue on hover */
+            transform: scale(1.05); /* Slight zoom effect */
+        }
+
+        .installButton:active {
+            transform: scale(0.95); /* Slight shrink effect on click */
+        }
     </style>
 
 <head>
@@ -291,7 +314,7 @@
             <button id="decline-btn" class="cookie-btn decline-btn">Decline</button>
         </div>
         
-        <button id="installButton" style="display:none;">Install App</button>
+        
 </div>
 
 
@@ -328,26 +351,24 @@
     <div class="blur-slide">
         <h1> OTT'tz  Welcomes you !  </h1>
         <h3>world's #1 OTT theatre on desk </h3>
+        <h5>Are your ready buddy !</h5>
         <h1></h1>
         <h1></h1>
-        <h1></h1>
-        <h1></h1>
-        <h5> ( platform for wacthing offline OTT movies in 4D-IMAX )</h5>
+        <h5> ( to watch offline OTT movies in 4D-IMAX )</h5>
      
     </div>
 
     <div class="blur-slide">
         <h1> OTT'tz  Welcomes you !  </h1>
         <h3>world's #1 OTT theatre on desk </h3>
+        <h5>Are your ready buddy !</h5>
         <h1></h1>
         <h1></h1>
-        <h1></h1>
-        <h1></h1>
-        <h5> ( platform for wacthing offline OTT movies in 4D-IMAX )</h5>
+        <h5> ( to watch offline OTT movies in 4D-IMAX )</h5>
      
     </div>
     
-
+    <button id="installButton" style="display:none;">Install App</button>
     <script>
         // JavaScript for cookie bar
         document.addEventListener("DOMContentLoaded", () => {
