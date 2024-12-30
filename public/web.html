@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <link rel="manifest" href="manifest.json">
     <title>Aesthetic Video Background</title>
     <style>
         /* General Reset */
@@ -361,6 +362,32 @@
     </audio>
     
 
+    <button id="installButton" style="display:none;">Install App</button>
+    <script>
+        // JavaScript for cookie bar
+        document.addEventListener("DOMContentLoaded", () => {
+            const cookieBar = document.getElementById("cookie-bar");
+            const acceptBtn = document.getElementById("accept-btn");
+            const declineBtn = document.getElementById("decline-btn");
+
+            const hideCookieBar = () => {
+                cookieBar.classList.add("hidden");
+                setTimeout(() => {
+                    cookieBar.style.display = "none"; // Remove it from the DOM after fade-out
+                }, 500); // Match the fade-out duration
+            };
+
+            acceptBtn.addEventListener("click", () => {
+                console.log("Cookies accepted");
+                hideCookieBar();
+            });
+
+            declineBtn.addEventListener("click", () => {
+                console.log("Cookies declined");
+                hideCookieBar();
+            });
+        });
+    </script>
     <script>
       const percentageElement = document.getElementById("percentage1");
       const overlay1= document.getElementById("loadingOverlay1");
