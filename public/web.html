@@ -363,31 +363,34 @@
     
 
     <button id="installButton" style="display:none;">Install App</button>
+
     <script>
-        // JavaScript for cookie bar
-        document.addEventListener("DOMContentLoaded", () => {
-            const cookieBar = document.getElementById("cookie-bar");
-            const acceptBtn = document.getElementById("accept-btn");
-            const declineBtn = document.getElementById("decline-btn");
+  let deferredPrompt;
+  const installButton = document.getElementById('installButton');
 
-            const hideCookieBar = () => {
-                cookieBar.classList.add("hidden");
-                setTimeout(() => {
-                    cookieBar.style.display = "none"; // Remove it from the DOM after fade-out
-                }, 500); // Match the fade-out duration
-            };
+  window.addEventListener('beforeinstallprompt', (event) => {
+    // Prevent the default prompt
+    event.preventDefault();
+    deferredPrompt = event;
 
-            acceptBtn.addEventListener("click", () => {
-                console.log("Cookies accepted");
-                hideCookieBar();
-            });
+    // Show your custom install button
+    installButton.style.display = 'block';
 
-            declineBtn.addEventListener("click", () => {
-                console.log("Cookies declined");
-                hideCookieBar();
-            });
-        });
-    </script>
+    // When the button is clicked, show the prompt
+    installButton.addEventListener('click', () => {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted the A2HS prompt');
+        } else {
+          console.log('User dismissed the A2HS prompt');
+        }
+        deferredPrompt = null;
+      });
+    });
+  });
+</script>
+    
     <script>
       const percentageElement = document.getElementById("percentage1");
       const overlay1= document.getElementById("loadingOverlay1");
