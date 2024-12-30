@@ -12,11 +12,6 @@
             box-sizing: border-box;
         }
 
-        body {
-            font-family: Arial, sans-serif;
-            overflow: hidden;
-        }
-    
         .overlay1{
             position: fixed;
             top: 0;
@@ -111,6 +106,12 @@
             }
         }
 
+        body {
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+    
+   
         /* Video Container */
         .video-container {
             position: relative;
@@ -163,7 +164,7 @@
             padding: 15px 30px;
             font-size: 1.2rem;
             color: white;
-            background: rgb(8, 145, 250);
+            background: rgba(255, 255, 255, 0.3);
             border: 2px solid white;
             border-radius: 30px;
             cursor: pointer;
@@ -204,9 +205,46 @@
         }
 
         .navbar a:hover {
-            background: rgb(8, 145, 250);
+            background: rgba(255, 255, 255, 0.2);
             border-radius: 30px;
         }
+
+        .content{
+            position: absolute;
+            top: 30%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+        }
+
+       /* Example comic-style font */
+
+.content h1 {
+    padding: 15px 30px;
+    font-size: 2.8rem; /* Increased size for emphasis */
+    font-family: 'Baloo 2', sans-serif; /* Comic-style font */
+    color: white;
+    border-radius: 30px;
+    backdrop-filter: blur(5px);
+    transition: background 0.3s ease, color 0.3s ease;
+    text-align: center; /* Centered text for a balanced look */
+    margin: 10px 0; /* Space between h1 and h2 */
+}
+
+.content h2 {
+    font-size: 1.2rem; /* Smaller font size for the line above */
+    font-family: 'Baloo 2', sans-serif;
+    color: #aaa; /* Slightly muted color */
+    text-align: center; /* Match the alignment with h1 */
+    margin-bottom: 5px; /* Space below the small line */
+}
+
+.content {
+    display: flex;
+    flex-direction: column; /* Ensures vertical stacking */
+    align-items: center; 
+    top: 33%;/* Center content horizontally */
+}
 
         /* CTA Button */
         .cta {
@@ -250,8 +288,8 @@
         }
 
         .cta-button:hover {
-            background: rgb(8, 145, 250);
-            color: rgb(234, 254, 255);
+            background: rgba(255, 255, 255, 0.6);
+            color: black;
         }
 
         /* Responsive Adjustments */
@@ -267,7 +305,7 @@
     </style>
 </head>
 <body>
-
+    
     <div class="overlay1" id="loadingOverlay1">
         <div class="loading-container">
             <div class="particle-bg"></div>
@@ -278,12 +316,12 @@
             
         </div>
     </div>
-    
+
     <!-- Video Container -->
     <div class="video-container">
         <!-- Background Video -->
         <video autoplay muted loop id="background-video">
-            <source src="avc_avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
+            <source src="avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
 
@@ -296,11 +334,18 @@
             </ul>
         </nav>
 
+        <div class="content">
+            <h2>Your Offline OTT movies </h2>
+            <h1>Now On IMAX for free 1-time/day</h1></div>
         <!-- CTA Button -->
         <div class="cta">
             <a href="c.html" class="cta-button">Grab your seat</a>
         </div>
     </div>
+    <div class="content">
+        <h2>Your Offline OTT movies </h2>
+        <h1>Now On IMAX for free 1-time/day</h1></div>
+    <!-- CTA Button -->
 
     <!-- Overlay for Enable Sound -->
     <div class="overlay" id="sound-overlay">
@@ -355,6 +400,7 @@
       });
   </script>
 
+      </script>
     <script>
         // Music and overlay handling
         const music = document.getElementById('background-music');
@@ -367,27 +413,5 @@
             overlay.classList.add('hidden'); // Add 'hidden' class to fade out overlay
         });
     </script>
-
-     <script>
-      // Disable right-click context menu
-      document.addEventListener("contextmenu", (event) => {
-          event.preventDefault();
-          alert("Right-click is disabled on this webpage.");
-      });
-
-      // Disable specific keyboard shortcuts
-      document.addEventListener("keydown", (event) => {
-          // Disable F12 (DevTools), Ctrl+Shift+I, Ctrl+U, etc.
-          if (
-              event.key === "F12" || 
-              (event.ctrlKey && event.shiftKey && event.key === "I") || 
-              (event.ctrlKey && event.key === "U") || 
-              (event.ctrlKey && event.key === "S") // Disable Ctrl+S (Save)
-          ) {
-              event.preventDefault();
-              alert("Viewing the source code is disabled on this webpage.");
-          }
-      });
-  </script>
 </body>
 </html>
