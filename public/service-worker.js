@@ -1,6 +1,6 @@
 const CACHE_NAME = 'pwa-cache-v1';
 const urlsToCache = [
-  'index.html',
+  'web.html',
   'manifest.json',
   'offline.html',
   'OTTtz-192-logo.png', // Corrected file names
