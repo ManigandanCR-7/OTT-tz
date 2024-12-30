@@ -269,34 +269,11 @@
             text-align: center;
         }
 
-        .installButton {
-            display: none; /* Hidden by default */
-            padding: 10px 20px;
-            background-color: #007BFF; /* Blue color */
-            color: white; /* White text */
-            font-size: 1rem;
-            font-family: Arial, sans-serif;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        .installButton:hover {
-            background-color: #0056b3; /* Darker blue on hover */
-            transform: scale(1.05); /* Slight zoom effect */
-        }
-
-        .installButton:active {
-            transform: scale(0.95); /* Slight shrink effect on click */
-        }
     </style>
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="manifest" href="manifest.json">
     <title>OTT'tz Theatre on Desk</title>
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
@@ -369,32 +346,7 @@
      
     </div>
     
-    <button id="installButton" style="display:none;">Install App</button>
-    <script>
-        // JavaScript for cookie bar
-        document.addEventListener("DOMContentLoaded", () => {
-            const cookieBar = document.getElementById("cookie-bar");
-            const acceptBtn = document.getElementById("accept-btn");
-            const declineBtn = document.getElementById("decline-btn");
-
-            const hideCookieBar = () => {
-                cookieBar.classList.add("hidden");
-                setTimeout(() => {
-                    cookieBar.style.display = "none"; // Remove it from the DOM after fade-out
-                }, 500); // Match the fade-out duration
-            };
-
-            acceptBtn.addEventListener("click", () => {
-                console.log("Cookies accepted");
-                hideCookieBar();
-            });
-
-            declineBtn.addEventListener("click", () => {
-                console.log("Cookies declined");
-                hideCookieBar();
-            });
-        });
-    </script>
+   
 
 <script>
   let deferredPrompt;
