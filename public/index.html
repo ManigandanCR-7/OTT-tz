@@ -291,6 +291,26 @@
         .installButton:active {
             transform: scale(0.95); /* Slight shrink effect on click */
         }
+
+        #product-hunt-badge {
+  position: fixed; /* Keeps the badge fixed in one place */
+  bottom: 10px;    /* Places it 10px from the bottom of the viewport */
+  right: 10px;     /* Places it 10px from the right of the viewport */
+  z-index: 1000;   /* Ensures it appears above other content */
+}
+
+#product-hunt-badge img {
+  width: 250px;    /* Sets the width of the badge */
+  height: auto;    /* Maintains the aspect ratio */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Adds a slight shadow for better visibility */
+  border-radius: 5px; /* Rounds the corners slightly */
+  transition: transform 0.3s; /* Adds a hover effect */
+}
+
+#product-hunt-badge img:hover {
+  transform: scale(1.1); /* Slightly enlarges the badge on hover */
+}
+
     </style>
 
 <head>
@@ -331,7 +351,7 @@
     <div class="video-container">
         <!-- Background Video -->
         <video autoplay muted loop id="background-video">
-            <source src="avc_avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
+            <source src="avc_Untitled video - Made with Clipchamp (43).mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
         
@@ -357,6 +377,8 @@
      
     </div>
 
+    
+
     <div class="blur-slide">
         <h1> OTT'tz  Welcomes you !  </h1>
         <h3>world's #1 OTT theatre on desk </h3>
@@ -366,6 +388,15 @@
         <h5> ( to watch offline OTT movies in IMAX )</h5>
      
     </div>
+    <div id="product-hunt-badge">
+        <a href="https://www.producthunt.com/posts/ott-tz-theatre-on-desk?embed=true&utm_source=badge-featured&utm_medium=badge&utm_souce=badge-ott-tz-theatre-on-desk" target="_blank">
+          <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=750289&theme=light" 
+               alt="OTT'tz Theatre on Desk - an mini app where OTT meets IMAX | Product Hunt" />
+        </a>
+      </div>
+      
+
+    
     
     <button id="installButton" style="display:none;">Install App</button>
     <script>
