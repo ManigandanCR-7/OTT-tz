@@ -311,6 +311,22 @@
   transform: scale(1.1); /* Slightly enlarges the badge on hover */
 }
 
+         #mobile-warning {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            z-index: 9999;
+        }
+
     </style>
 
 <head>
@@ -321,6 +337,10 @@
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
+
+    <div id="mobile-warning">
+        <p>You need a desktop or laptop to view our app. Please switch to a larger device for the best experience.</p>
+    </div>
     <!-- Cookie Bar -->
     <div id="cookie-bar" class="cookie-bar-overlay">
         
@@ -544,6 +564,27 @@
             const expires = new Date(Date.now() + days * 864e5).toUTCString();
             document.cookie = `${name}=${encodeURIComponent(value)}; expires=${expires}; path=/`;
         }
+    </script>
+
+    <script>
+        // Function to check if the device is mobile
+        function checkDevice() {
+            const warning = document.getElementById('mobile-warning');
+            const content = document.getElementById('content');
+            if (window.innerWidth < 768) { // Threshold for mobile devices
+                warning.style.display = 'flex';
+                content.style.display = 'none';
+            } else {
+                warning.style.display = 'none';
+                content.style.display = 'block';
+            }
+        }
+
+        // Initial check
+        checkDevice();
+
+        // Re-check on window resize
+        window.addEventListener('resize', checkDevice);
     </script>
     
 </body>
