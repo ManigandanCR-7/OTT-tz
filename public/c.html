@@ -188,7 +188,10 @@
           
       </div>
   </div>
-    <input type="file" id="fileInput" accept="video/*" onchange="loadVideo(event)">
+    <input type="file" id="fileInput"
+     accept="video/mp4,video/webm,video/ogg,video/quicktime,video/x-matroska,video/x-msvideo"
+    onchange="loadVideo(event)">
+
     
     <!-- Volume slider -->
     <input 
@@ -396,16 +399,38 @@
       let video, audioContext, gainNode, sourceNode;
       
 
-      // Function to load and display the selected video
+  // Function to load and display the selected video
       function loadVideo(event) {
-        const file = event.target.files[0];
-        if (file && file.type.startsWith("video")) {
-          video = document.createElement("video");
-          video.src = URL.createObjectURL(file);
-          video.crossOrigin = "anonymous";
-          video.loop = false; // Disable looping to allow for reset
-          video.autoplay = true;
-          video.muted = false;
+       const file = event.target.files[0];
+       if (!file) return;
+
+  // Supported video MIME types
+      const supportedTypes = [
+        "video/mp4",
+        "video/webm",
+        "video/ogg",
+        "video/quicktime",     // .mov
+        "video/x-matroska",    // .mkv
+        "video/x-msvideo"     // .avi
+      ];
+
+      const testVideo = document.createElement("video");
+
+  // Check browser / VR playback capability
+      if (
+        !supportedTypes.includes(file.type) ||
+        testVideo.canPlayType(file.type) === ""
+      ) {
+       alert("This video format or codec is not supported in this VR player.");
+       return;
+      }
+
+         video = document.createElement("video");
+         video.src = URL.createObjectURL(file);
+         video.crossOrigin = "anonymous";
+         video.loop = false; // Disable looping to allow for reset
+         video.autoplay = true;
+         video.muted = false;
 
           // Web Audio API for volume amplification
           audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -604,6 +629,7 @@ function resetToWhiteScreen() {
     
   </body>
 </html>
+
 
 
 
