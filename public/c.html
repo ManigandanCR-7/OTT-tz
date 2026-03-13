@@ -640,55 +640,51 @@ function resetToWhiteScreen() {
 
 const youtubeBox = document.getElementById("youtubeBox");
 
-window.addEventListener("keydown", (event) => {
-  if(event.key.toLowerCase() === "y"){
-    youtubeBox.style.display = "block";
-  }
+window.addEventListener("keydown",(e)=>{
+if(e.key.toLowerCase()==="y"){
+youtubeBox.style.display="block";
+}
 });
 
-
-function extractYouTubeID(url){
-  const regExp = /(?:youtube\.com.*(?:\?|&)v=|youtu\.be\/)([^&#]+)/;
-  const match = url.match(regExp);
-  return match ? match[1] : null;
+function extractID(url){
+const reg = /(?:youtube\.com.*v=|youtu\.be\/)([^&]+)/;
+const match = url.match(reg);
+return match ? match[1] : null;
 }
 
+function loadYouTube(){
 
-function playYoutube(){
+const link = document.getElementById("youtubeLink").value;
+const id = extractID(link);
 
-  const link = document.getElementById("youtubeLink").value;
-  const videoID = extractYouTubeID(link);
+if(!id){
+alert("Invalid link");
+return;
+}
 
-  if(!videoID){
-    alert("Invalid YouTube Link");
-    return;
-  }
+const iframe = document.createElement("iframe");
 
-  // Using Invidious mirror for playable stream
-  const streamURL = `https://yewtu.be/latest_version?id=${videoID}&itag=18`;
+iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&controls=1`;
+iframe.width = "1280";
+iframe.height = "720";
+iframe.allow = "autoplay";
 
-  video = document.createElement("video");
-  video.src = streamURL;
-  video.crossOrigin = "anonymous";
-  video.autoplay = true;
-  video.loop = false;
+iframe.style.position="absolute";
+iframe.style.top="50%";
+iframe.style.left="50%";
+iframe.style.transform="translate(-50%,-50%)";
+iframe.style.zIndex="10";
 
-  video.play();
+document.body.appendChild(iframe);
 
-  const videoTexture = new THREE.VideoTexture(video);
-
-  videoPlane.setAttribute("material","src",videoTexture);
-
-  youtubeBox.style.display = "none";
-
-  volumeSlider.style.display="block";
-  playPauseButton.style.display="block";
+youtubeBox.style.display="none";
 }
 
     </script>
     
   </body>
 </html>
+
 
 
 
