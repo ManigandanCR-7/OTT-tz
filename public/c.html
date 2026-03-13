@@ -173,6 +173,31 @@
           border-radius: 50%;
         }
       }
+     #youtubeBox{
+      position: fixed;
+      top:50%;
+      left:50%;
+      transform:translate(-50%,-50%);
+      background:black;
+      padding:20px;
+      border-radius:10px;
+      z-index:9999;
+      display:none;
+     }
+
+   #youtubeBox input{
+      width:300px;
+      padding:10px;
+    }
+
+   #youtubeBox button{
+     padding:10px 20px;
+     margin-top:10px;
+     background:#ff4d4d;
+     color:white;
+     border:none;
+     cursor:pointer;
+    }
       </style>
     
     <title>OTT'tz theatre on desk</title>
@@ -189,6 +214,13 @@
       </div>
   </div>
    <input type="file" id="fileInput" accept="video/*" onchange="loadVideo(event)">
+
+    <div id="youtubeBox">
+     <p>Paste YouTube Link</p>
+      <input type="text" id="youtubeLink" placeholder="https://youtube.com/watch?v=...">
+      <br>
+       <button onclick="playYoutube()">Submit</button>
+    </div>
     
     <!-- Volume slider -->
     <input 
@@ -277,6 +309,7 @@
   </script>
 
     <script>
+      
       const percentageElement = document.getElementById("percentage1");
       const overlay1= document.getElementById("loadingOverlay1");
       const container = document.querySelector(".particle-bg");
@@ -605,10 +638,58 @@ function resetToWhiteScreen() {
   }
 });
 
+const youtubeBox = document.getElementById("youtubeBox");
+
+window.addEventListener("keydown", (event) => {
+  if(event.key.toLowerCase() === "y"){
+    youtubeBox.style.display = "block";
+  }
+});
+
+
+function extractYouTubeID(url){
+  const regExp = /(?:youtube\.com.*(?:\?|&)v=|youtu\.be\/)([^&#]+)/;
+  const match = url.match(regExp);
+  return match ? match[1] : null;
+}
+
+
+function playYoutube(){
+
+  const link = document.getElementById("youtubeLink").value;
+  const videoID = extractYouTubeID(link);
+
+  if(!videoID){
+    alert("Invalid YouTube Link");
+    return;
+  }
+
+  // Using Invidious mirror for playable stream
+  const streamURL = `https://yewtu.be/latest_version?id=${videoID}&itag=18`;
+
+  video = document.createElement("video");
+  video.src = streamURL;
+  video.crossOrigin = "anonymous";
+  video.autoplay = true;
+  video.loop = false;
+
+  video.play();
+
+  const videoTexture = new THREE.VideoTexture(video);
+
+  videoPlane.setAttribute("material","src",videoTexture);
+
+  youtubeBox.style.display = "none";
+
+  volumeSlider.style.display="block";
+  playPauseButton.style.display="block";
+}
+
     </script>
     
   </body>
 </html>
+
 
 
 
