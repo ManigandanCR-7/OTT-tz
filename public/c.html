@@ -173,31 +173,33 @@
           border-radius: 50%;
         }
       }
-     #youtubeBox{
-      position: fixed;
-      top:50%;
-      left:50%;
-      transform:translate(-50%,-50%);
-      background:black;
-      padding:20px;
-      border-radius:10px;
-      z-index:9999;
-      display:none;
-     }
+         #youtubeBox{
+          position:fixed;
+          top:50%;
+          left:50%;
+          transform:translate(-50%,-50%);
+          background:black;
+          padding:20px;
+          border-radius:10px;
+          z-index:9999;
+          display:none;
+          color:white;
+        }
+ 
+       #youtubeBox input{
+          width:320px;
+          padding:10px;
+        }
 
-   #youtubeBox input{
-      width:300px;
-      padding:10px;
-    }
-
-   #youtubeBox button{
-     padding:10px 20px;
-     margin-top:10px;
-     background:#ff4d4d;
-     color:white;
-     border:none;
-     cursor:pointer;
-    }
+      #youtubeBox button{
+         margin-top:10px;
+         padding:8px 20px;
+         background:#ff4d4d;
+         color:white;
+         border:none;
+         cursor:pointer;
+      }
+      
       </style>
     
     <title>OTT'tz theatre on desk</title>
@@ -215,12 +217,12 @@
   </div>
    <input type="file" id="fileInput" accept="video/*" onchange="loadVideo(event)">
 
-    <div id="youtubeBox">
-     <p>Paste YouTube Link</p>
-      <input type="text" id="youtubeLink" placeholder="https://youtube.com/watch?v=...">
-      <br>
-       <button onclick="playYoutube()">Submit</button>
-    </div>
+   <div id="youtubeBox">
+       <p>Paste YouTube Link</p>
+      <input id="youtubeLink" placeholder="Paste YouTube URL">
+     <br>
+      <button onclick="loadYouTube()">Submit</button>
+   </div>
     
     <!-- Volume slider -->
     <input 
@@ -684,6 +686,7 @@ youtubeBox.style.display="none";
     
   </body>
 </html>
+
 
 
 
