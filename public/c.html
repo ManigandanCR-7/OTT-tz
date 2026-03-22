@@ -683,6 +683,58 @@ youtubeBox.style.display="none";
 }
 
     </script>
+
+<script>
+// ✅ Auto-attach vertical movement to #player (no HTML changes needed)
+
+window.addEventListener("DOMContentLoaded", () => {
+
+  const player = document.querySelector("#player");
+  if (!player) return;
+
+  let moveUp = false;
+  let moveDown = false;
+
+  const speed = 0.15; // adjust if needed
+
+  // 🎮 Key controls
+  window.addEventListener("keydown", (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === "u") moveUp = true;     // move up
+    if (key === "j") moveDown = true;   // move down (optional)
+  });
+
+  window.addEventListener("keyup", (e) => {
+    const key = e.key.toLowerCase();
+
+    if (key === "u") moveUp = false;
+    if (key === "j") moveDown = false;
+  });
+
+  // 🔁 Smooth movement loop
+  function update() {
+    const pos = player.object3D.position;
+
+    if (moveUp) {
+      pos.y += speed;
+    }
+
+    if (moveDown) {
+      pos.y -= speed;
+    }
+
+    // 🔒 Optional height limits (safe bounds)
+    pos.y = Math.max(1, Math.min(25, pos.y));
+
+    requestAnimationFrame(update);
+  }
+
+  update();
+});
+  
+</script>
+      
     
   </body>
 </html>
